@@ -7,7 +7,7 @@ Content-Type: application/json
   "lastName": "Shahata",
   "age": 19,
   "email":"mohamedmrslan@gmail.com",
-  "password": "123"
+  "password": "123456789"
 }
 
 ### Verify code
@@ -15,8 +15,8 @@ POST http://localhost:5000/api/auth/verify-code
 Content-Type: application/json
 
 {
-  "email":"mohamedmrslan1@gmail.com",
-  "code": "262694"
+  "email":"mohamedmrslan@gmail.com",
+  "code": "658356"
 }
 
 ### Login

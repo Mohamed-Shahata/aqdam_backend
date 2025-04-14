@@ -8,3 +8,8 @@ export type JWTPayload = {
 export type AccessToken = {
   accessToken: string
 }
+
+export type ImageType = {
+  public_id: string,
+  url: string
+}

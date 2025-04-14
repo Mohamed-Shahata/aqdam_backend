@@ -28,8 +28,11 @@ export class User {
   @Column({ nullable: true })
   bio: string
 
-  @Column({ nullable: true })
-  profileImage: string
+  @Column({ type: "varchar", nullable: true })
+  profileImage: string | null
+
+  @Column({ type: "varchar", nullable: true })
+  imagePublicId: string | null
 
   @Column({ default: false })
   isAccountVerify: boolean
