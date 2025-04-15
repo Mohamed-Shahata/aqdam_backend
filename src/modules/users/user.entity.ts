@@ -1,5 +1,5 @@
 import { UserRole } from "src/utils/enum.roles";
-import { Column, Entity, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
 export class User {
@@ -39,4 +39,21 @@ export class User {
 
   @Column({ type: "varchar", nullable: true })
   verificationCode: string | null
-}
+
+  @ManyToMany(() => User, user => user.followers)
+  @JoinTable({
+    name: "user_followers",
+    joinColumn: {
+      name: "follower_id",
+      referencedColumnName: "id"
+    },
+    inverseJoinColumn: {
+      name: "followeing_id",
+      referencedColumnName: "id"
+    }
+  })
+  following: User[]
+
+  @ManyToMany(() => User, user => user.following)
+  followers: User[]
+};

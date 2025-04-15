@@ -42,6 +42,7 @@ export class UserController {
     return this.userService.delete(payload);
   };
 
+  // POST: ~/api/users/images/upload-image
   @Post("images/upload-image")
   @UseInterceptors(FileInterceptor("user-image"))
   @Roles(UserRole.ADMIN, UserRole.SUP_USER, UserRole.USER)
@@ -54,6 +55,7 @@ export class UserController {
     return this.userService.uploadImage(payload, file);
   }
 
+  // DELETE: ~/api/users/images/delete-image
   @Delete("images/delete-image")
   @Roles(UserRole.ADMIN, UserRole.SUP_USER, UserRole.USER)
   @UseGuards(AuthGuard)
@@ -62,4 +64,24 @@ export class UserController {
   ) {
     return this.userService.deleteImage(payload);
   };
+
+  // POST: ~/api/users/follow/:targetId
+  @UseGuards(AuthGuard)
+  @Post("follow/:targetId")
+  public toggleFollowUser(@Param("targetId", ParseIntPipe) targetId: number, @CurrentUser() payload: JWTPayload) {
+    return this.userService.toggleFollow(payload.id, targetId);
+  }
+
+  // POST: ~/api/users/following
+  @UseGuards(AuthGuard)
+  @Post("following")
+  public getFollowingUser(@CurrentUser() payload: JWTPayload) {
+    return this.userService.getFollowing(payload.id);
+  }
+  // POST: ~/api/users/followers
+  @UseGuards(AuthGuard)
+  @Post("followers")
+  public getFollowersUser(@CurrentUser() payload: JWTPayload) {
+    return this.userService.getFollowers(Number(payload.id));
+  }
 };

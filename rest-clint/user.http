@@ -25,3 +25,15 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsInJvbGUiO
 ### Delete image
 DELETE http://localhost:5000/api/users/images/delete-image
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NjMzOTUzLCJleHAiOjE3NDQ3MjAzNTN9.TU6OTMVqUL4DQUOOZSkzyLBhyk4zMc_zaTds7aeLMeY
+
+### toggleFollow user
+POST  http://localhost:5000/api/users/follow/29
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzEzNDc2LCJleHAiOjE3NDQ3OTk4NzZ9.-uz_7M3axpwpz3hhPmKBCWkoISX2pQs4Rc4cewDSzTY
+
+### follow user
+POST  http://localhost:5000/api/users/following
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzEzNDc2LCJleHAiOjE3NDQ3OTk4NzZ9.-uz_7M3axpwpz3hhPmKBCWkoISX2pQs4Rc4cewDSzTY
+### follow user
+
+POST  http://localhost:5000/api/users/followers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzEzNDc2LCJleHAiOjE3NDQ3OTk4NzZ9.-uz_7M3axpwpz3hhPmKBCWkoISX2pQs4Rc4cewDSzTY

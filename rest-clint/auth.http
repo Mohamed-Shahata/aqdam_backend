@@ -3,10 +3,10 @@ POST http://localhost:5000/api/auth/register
 Content-Type: application/json
 
 {
-  "firstName":"Mohamed",
-  "lastName": "Shahata",
+  "firstName":"Reem",
+  "lastName": "Mohamed",
   "age": 19,
-  "email":"mohamedmrslan@gmail.com",
+  "email":"mohamedmrslan1@gmail.com",
   "password": "123456789"
 }
 
@@ -15,8 +15,8 @@ POST http://localhost:5000/api/auth/verify-code
 Content-Type: application/json
 
 {
-  "email":"mohamedmrslan@gmail.com",
-  "code": "658356"
+  "email":"mohamedmrslan1@gmail.com",
+  "code": "335992"
 }
 
 ### Login
@@ -24,6 +24,6 @@ POST http://localhost:5000/api/auth/login
 Content-Type: application/json
 
 {
-  "email":"mohamedmrslan@gmail.com",
+  "email":"mohamedmrslan1@gmail.com",
   "password": "123456789"
 }
