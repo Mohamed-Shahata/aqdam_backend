@@ -1,0 +1,38 @@
+### Get all job
+GET  http://localhost:5000/api/jobs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEzNDk4LCJleHAiOjE3NDQ4OTk4OTh9.YZ3PozpGtrrmoIGCZ68MCN8kQZyiWTCcMd_6jE3aGl0
+
+### Get all job user
+GET  http://localhost:5000/api/jobs/user/32
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEzNDk4LCJleHAiOjE3NDQ4OTk4OTh9.YZ3PozpGtrrmoIGCZ68MCN8kQZyiWTCcMd_6jE3aGl0
+
+### Get one job
+GET  http://localhost:5000/api/jobs/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEyOTY1LCJleHAiOjE3NDQ4OTkzNjV9._we7UOFJox0OlwMWu2Z5bLyOeSIaAbeFQAXU3QYE8A8
+
+### Create job
+POST  http://localhost:5000/api/jobs
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEyOTY1LCJleHAiOjE3NDQ4OTkzNjV9._we7UOFJox0OlwMWu2Z5bLyOeSIaAbeFQAXU3QYE8A8
+Content-Type: application/json
+
+{
+  "title":"Back end Develover",
+  "short_intro":"anything",
+  "responsibilities":"Back end Develover expirt",
+  "requirements":"Mongodb express nestjs and more",
+  "extra_info":"no thing",
+  "email_applay":"mohamed@gmail.com"
+}
+
+### Update job
+PATCH   http://localhost:5000/api/jobs/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEzNDk4LCJleHAiOjE3NDQ4OTk4OTh9.YZ3PozpGtrrmoIGCZ68MCN8kQZyiWTCcMd_6jE3aGl0
+Content-Type: application/json
+
+{
+  "title":"Software Develover"
+}
+
+### delete job
+DELETE http://localhost:5000/api/jobs/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEyOTY1LCJleHAiOjE3NDQ4OTkzNjV9._we7UOFJox0OlwMWu2Z5bLyOeSIaAbeFQAXU3QYE8A8

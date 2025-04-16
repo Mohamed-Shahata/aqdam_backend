@@ -1,5 +1,6 @@
 import { UserRole } from "src/utils/enum.roles";
-import { Column, Entity, JoinTable, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Job } from "../jobs/job.entity";
 
 @Entity()
 export class User {
@@ -56,4 +57,7 @@ export class User {
 
   @ManyToMany(() => User, user => user.following)
   followers: User[]
+
+  @OneToMany(() => Job, (job) => job.user)
+  job: Job[]
 };
