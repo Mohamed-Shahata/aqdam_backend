@@ -48,7 +48,7 @@ export class User {
       referencedColumnName: "id"
     },
     inverseJoinColumn: {
-      name: "followeing_id",
+      name: "following_id",
       referencedColumnName: "id"
     }
   })

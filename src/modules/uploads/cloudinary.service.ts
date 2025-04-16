@@ -13,7 +13,7 @@ export class CloudinaryService {
    */
   public async uploadImage(file: Express.Multer.File, folder: string = "uploads"): Promise<any> {
     return new Promise((resolve, rejects) => {
-      if (file.size > 1000000) {
+      if (file.size > 2000000) {
         return rejects(new BadRequestException("size image is bigger"));
       };
 

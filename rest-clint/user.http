@@ -1,11 +1,13 @@
 ### Get all users
-GET http://localhost:5000/api/users
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NjI2NDMzLCJleHAiOjE3NDQ3MTI4MzN9.93MU1_kPVPNtH2DauGVZW6q4CQ3Oilj0zqxjo36Rszk
+GET http://localhost:5000/api/users?search=mohamed
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzQxNDczLCJleHAiOjE3NDQ4Mjc4NzN9.a1MxQpqRyEzbVvWwhIWYOI0hKE1ly0H6yOevsa-EK0g
 
 ### Get one user
 GET http://localhost:5000/api/users/26
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NjI2NDMzLCJleHAiOjE3NDQ3MTI4MzN9.93MU1_kPVPNtH2DauGVZW6q4CQ3Oilj0zqxjo36Rszk
-
+### Get me
+POST http://localhost:5000/api/users/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzU4Mjk0LCJleHAiOjE3NDQ4NDQ2OTR9.I1T56gbmtDnQgIuXki74beJEKo4uZzx3RmHt1doMoyQ
 ### Update user
 PATCH http://localhost:5000/api/users
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NjI2NDMzLCJleHAiOjE3NDQ3MTI4MzN9.93MU1_kPVPNtH2DauGVZW6q4CQ3Oilj0zqxjo36Rszk
@@ -27,13 +29,13 @@ DELETE http://localhost:5000/api/users/images/delete-image
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjcsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NjMzOTUzLCJleHAiOjE3NDQ3MjAzNTN9.TU6OTMVqUL4DQUOOZSkzyLBhyk4zMc_zaTds7aeLMeY
 
 ### toggleFollow user
-POST  http://localhost:5000/api/users/follow/29
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzEzNDc2LCJleHAiOjE3NDQ3OTk4NzZ9.-uz_7M3axpwpz3hhPmKBCWkoISX2pQs4Rc4cewDSzTY
+POST http://localhost:5000/api/users/follow/30
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjksInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzQ1MzI4LCJleHAiOjE3NDQ4MzE3Mjh9.l10JvpRDHbujrkFrwoIBIGdxkRZEiMS3N9N7TVFEiTA
 
 ### follow user
-POST  http://localhost:5000/api/users/following
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzEzNDc2LCJleHAiOjE3NDQ3OTk4NzZ9.-uz_7M3axpwpz3hhPmKBCWkoISX2pQs4Rc4cewDSzTY
+POST http://localhost:5000/api/users/30/following
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzUwNjEyLCJleHAiOjE3NDQ4MzcwMTJ9.ubdmcqNBIIq8z37ReDkCTKicmLlD9q89vV0Ph3e2vKU
 ### follow user
 
-POST  http://localhost:5000/api/users/followers
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzEzNDc2LCJleHAiOjE3NDQ3OTk4NzZ9.-uz_7M3axpwpz3hhPmKBCWkoISX2pQs4Rc4cewDSzTY
+POST http://localhost:5000/api/users/30/followers
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzUwNjEyLCJleHAiOjE3NDQ4MzcwMTJ9.ubdmcqNBIIq8z37ReDkCTKicmLlD9q89vV0Ph3e2vKU

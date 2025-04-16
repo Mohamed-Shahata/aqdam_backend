@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./user.entity";
-import { Repository } from "typeorm";
+import { ILike, Like, Repository } from "typeorm";
 import { UpdateUserDto } from "./dto/user-update.dto";
 import { CloudinaryService } from "../uploads/cloudinary.service";
 import { JWTPayload } from "src/utils/type";
@@ -21,10 +21,16 @@ export class UserService {
    * 
    * @returns {Promise<User[]>} Array of all users.
    */
-  public getAll(): Promise<User[]> {
-    return this.userRepository.find();
-  };
+  public async getAll(search?: string): Promise<User[]> {
+    const query = this.userRepository.createQueryBuilder('user');
 
+    if (search) {
+      query.where('LOWER(user.firstName) LIKE LOWER(:search)', { search: `%${search}%` })
+        .orWhere('LOWER(user.lastName) LIKE LOWER(:search)', { search: `%${search}%` });
+    }
+
+    return query.getMany();
+  }
 
   /**
    * Retrieves a single user by their ID.
@@ -34,6 +40,13 @@ export class UserService {
    * @throws {NotFoundException} If the user is not found.
    */
   public async getOne(id: number): Promise<User> {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user)
+      throw new NotFoundException("User not found");
+    return user;
+  };
+
+  public async getMe(id: number): Promise<User> {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user)
       throw new NotFoundException("User not found");
@@ -90,7 +103,7 @@ export class UserService {
       await this.cloudinaryService.deleteImage(user.imagePublicId!);
     };
 
-    const result = await this.cloudinaryService.uploadImage(file);
+    const result = await this.cloudinaryService.uploadImage(file, "users");
     user.profileImage = result.secure_url;
     user.imagePublicId = result.public_id;
     return await this.userRepository.save(user);
@@ -126,10 +139,15 @@ export class UserService {
    * @throws {BadRequestException} If the target user does not exist.
    */
   public async toggleFollow(id: number, targetUserId: number): Promise<{ message: string }> {
+
+    if (id === targetUserId)
+      throw new BadRequestException("You cannot follow your account.")
+
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['following']
     });
+
 
     const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
     if (!targetUser) throw new BadRequestException("Target user not found");
@@ -167,7 +185,7 @@ export class UserService {
    * @param {number} id - The ID of the user.
    * @returns {Promise<User[] | undefined>} Array of follower users.
    */
-  public async getFollowers(id: number) {
+  public async getFollowers(id: number): Promise<User[] | undefined> {
     const user = await this.userRepository.findOne({
       where: { id },
       relations: ['followers']

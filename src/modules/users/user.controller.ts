@@ -1,4 +1,4 @@
-import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
+import { BadRequestException, Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UploadedFile, UseGuards, UseInterceptors } from "@nestjs/common";
 import { UserService } from "./user.service";
 import { UpdateUserDto } from "./dto/user-update.dto";
 import { FileInterceptor } from "@nestjs/platform-express";
@@ -17,8 +17,10 @@ export class UserController {
   // GET: ~/api/users
   @Get()
   @UseGuards(AuthGuard)
-  public getAllUsers() {
-    return this.userService.getAll();
+  public getAllUsers(
+    @Query("search") search: string,
+  ) {
+    return this.userService.getAll(search);
   };
 
   // GET: ~/api/users/:id
@@ -26,6 +28,13 @@ export class UserController {
   @UseGuards(AuthGuard)
   public getOneUser(@Param("id", ParseIntPipe) id: number) {
     return this.userService.getOne(id);
+  };
+
+  // GET: ~/api/users/:id
+  @Post("me")
+  @UseGuards(AuthGuard)
+  public getmeUser(@CurrentUser() Payload: JWTPayload) {
+    return this.userService.getMe(Number(Payload.id));
   };
 
   // PATCH: ~/api/users
@@ -67,21 +76,21 @@ export class UserController {
 
   // POST: ~/api/users/follow/:targetId
   @UseGuards(AuthGuard)
-  @Post("follow/:targetId")
-  public toggleFollowUser(@Param("targetId", ParseIntPipe) targetId: number, @CurrentUser() payload: JWTPayload) {
+  @Post("follow/:id")
+  public toggleFollowUser(@Param("id", ParseIntPipe) targetId: number, @CurrentUser() payload: JWTPayload) {
     return this.userService.toggleFollow(payload.id, targetId);
   }
 
   // POST: ~/api/users/following
   @UseGuards(AuthGuard)
-  @Post("following")
-  public getFollowingUser(@CurrentUser() payload: JWTPayload) {
-    return this.userService.getFollowing(payload.id);
+  @Post(":id/following")
+  public getFollowingUser(@Param("id", ParseIntPipe) id: number) {
+    return this.userService.getFollowing(id);
   }
   // POST: ~/api/users/followers
   @UseGuards(AuthGuard)
-  @Post("followers")
-  public getFollowersUser(@CurrentUser() payload: JWTPayload) {
-    return this.userService.getFollowers(Number(payload.id));
+  @Post(":id/followers")
+  public getFollowersUser(@Param("id", ParseIntPipe) id: number) {
+    return this.userService.getFollowers(id);
   }
 };
