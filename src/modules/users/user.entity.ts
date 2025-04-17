@@ -41,6 +41,9 @@ export class User {
   @Column({ type: "varchar", nullable: true })
   verificationCode: string | null
 
+  @Column({ type: "integer", default: 0 })
+  point: number
+
   @ManyToMany(() => User, user => user.followers)
   @JoinTable({
     name: "user_followers",
@@ -60,4 +63,8 @@ export class User {
 
   @OneToMany(() => Job, (job) => job.user)
   job: Job[]
+
+  @ManyToMany(() => Job)
+  @JoinTable()
+  favorites: Job[]
 };

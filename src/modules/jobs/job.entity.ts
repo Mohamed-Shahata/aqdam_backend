@@ -1,4 +1,4 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../users/user.entity";
 import { CURRENT_TIMESTAMP } from "src/utils/constant";
 
@@ -35,4 +35,7 @@ export class Job {
 
   @ManyToOne(() => User, (user) => user.job, { eager: true })
   user: User
+
+  @ManyToMany(() => User, (user) => user.favorites)
+  favoriteBy: User[]
 }

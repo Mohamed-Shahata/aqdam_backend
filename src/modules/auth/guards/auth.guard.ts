@@ -55,6 +55,5 @@ export class AuthGuard implements CanActivate {
     } else {
       throw new UnauthorizedException("Access denied, no token provided");
     }
-    return false;
   };
 }

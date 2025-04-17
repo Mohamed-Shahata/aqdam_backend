@@ -2,6 +2,10 @@
 GET  http://localhost:5000/api/jobs
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEzNDk4LCJleHAiOjE3NDQ4OTk4OTh9.YZ3PozpGtrrmoIGCZ68MCN8kQZyiWTCcMd_6jE3aGl0
 
+### Get all job
+GET  http://localhost:5000/api/jobs/following
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDQ4NDU2NDcsImV4cCI6MTc0NDkzMjA0N30.r_MrJV_fE8YuL3jG7JDeqUfI8wQgN1q4WMcq9sL4O6E
+
 ### Get all job user
 GET  http://localhost:5000/api/jobs/user/32
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEzNDk4LCJleHAiOjE3NDQ4OTk4OTh9.YZ3PozpGtrrmoIGCZ68MCN8kQZyiWTCcMd_6jE3aGl0
@@ -36,3 +40,21 @@ Content-Type: application/json
 ### delete job
 DELETE http://localhost:5000/api/jobs/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEyOTY1LCJleHAiOjE3NDQ4OTkzNjV9._we7UOFJox0OlwMWu2Z5bLyOeSIaAbeFQAXU3QYE8A8
+
+### get favorites
+POST http://localhost:5000/api/jobs/favorites/me
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDQ4ODUxMDEsImV4cCI6MTc0NDk3MTUwMX0.9Gg7EpyWyvcTJpqo-pvwkkKG9cpP4x1HFf3n7FTyISA
+
+
+### add to favorites
+POST http://localhost:5000/api/jobs/favorites
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDQ4ODUxMDEsImV4cCI6MTc0NDk3MTUwMX0.9Gg7EpyWyvcTJpqo-pvwkkKG9cpP4x1HFf3n7FTyISA
+Content-Type: application/json
+
+{
+  "jobId":2
+}
+
+### delete from favorites
+DELETE  http://localhost:5000/api/jobs/favorites/2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDQ4ODUxMDEsImV4cCI6MTc0NDk3MTUwMX0.9Gg7EpyWyvcTJpqo-pvwkkKG9cpP4x1HFf3n7FTyISA

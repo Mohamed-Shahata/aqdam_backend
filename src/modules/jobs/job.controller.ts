@@ -20,6 +20,13 @@ export class JobController {
   }
 
   // GET: ~/api/jobs
+  @Get("following")
+  @UseGuards(AuthGuard)
+  public getAllJobsFollowing(@CurrentUser() payload: JWTPayload) {
+    return this.jobService.getAllFollowing(payload.id);
+  }
+
+  // GET: ~/api/jobs
   @Get("user/:userId")
   @UseGuards(AuthGuard)
   public getAllJobsWithMe(@Param("userId") userId: number) {
@@ -56,5 +63,23 @@ export class JobController {
   @UseGuards(AuthGuard)
   public deleteJob(@CurrentUser() payload: JWTPayload, @Param("id", ParseIntPipe) id: number) {
     return this.jobService.delete(payload, id);
+  }
+
+  @Post("favorites")
+  @UseGuards(AuthGuard)
+  public addJobToFavorites(@CurrentUser() payload: JWTPayload, @Body("jobId", ParseIntPipe) jobId: number) {
+    return this.jobService.addToFavorites(payload.id, jobId);
+  }
+
+  @Delete("favorites/:id")
+  @UseGuards(AuthGuard)
+  public deleteJobFromFavorites(@CurrentUser() payload: JWTPayload, @Param("id", ParseIntPipe) jobId: number) {
+    return this.jobService.removeFromFavorite(payload.id, +jobId);
+  }
+
+  @Post("favorites/me")
+  @UseGuards(AuthGuard)
+  public getUserFavorite(@CurrentUser() payload: JWTPayload) {
+    return this.jobService.getFavorites(payload.id);
   }
 };

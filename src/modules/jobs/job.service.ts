@@ -1,12 +1,13 @@
-import { BadRequestException, ForbiddenException, Injectable } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Job } from "./job.entity";
-import { Repository } from "typeorm";
+import { In, Repository } from "typeorm";
 import { CreateJobDto } from "./dto/create-job.dto";
 import { UserService } from "../users/user.service";
 import { JWTPayload } from "src/utils/type";
 import { UpdateJobDto } from "./dto/update-job.dto";
 import { UserRole } from "src/utils/enum.roles";
+import { User } from "../users/user.entity";
 
 
 
@@ -15,11 +16,31 @@ export class JobService {
 
   constructor(
     @InjectRepository(Job) private readonly jobRepository: Repository<Job>,
+    @InjectRepository(User) private readonly userRepository: Repository<User>,
     private readonly userService: UserService
   ) { };
 
   public getAll() {
     return this.jobRepository.find({ order: { createdAt: "DESC" } });
+  };
+
+  public async getAllFollowing(currentUserId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ["following"]
+    })
+
+    if (!user)
+      throw new NotFoundException("User not found");
+
+    const followingIds = user.following.map(f => f.id);
+
+    if (!followingIds.length) return [];
+    return this.jobRepository.find({
+      where: { user: In(followingIds) },
+      order: { createdAt: "DESC" },
+      relations: ["user"]
+    })
   };
 
   public async getAllForUserId(id: number) {
@@ -46,6 +67,9 @@ export class JobService {
       email_applay,
       user
     });
+
+    user.point += 5;
+    await this.userRepository.save(user);
 
     return await this.jobRepository.save(newJob);
   };
@@ -82,15 +106,57 @@ export class JobService {
     throw new ForbiddenException("Can't delete this job");
   }
 
+  public async addToFavorites(currentUserId: number, jobId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ["favorites"]
+    });
+
+    const job = await this.jobRepository.findOne({ where: { id: jobId } });
+
+    if (!user)
+      throw new NotFoundException("User not found")
+
+    if (!job)
+      throw new NotFoundException("Job not found")
+
+    if (!user.favorites.find((fav) => fav.id === job.id)) {
+      user.favorites.push(job);
+      return this.userRepository.save(user);
+    }
+    return user;
+  }
 
 
-  // private async checkAccessUserForJob(payload: JWTPayload, jobId: number) {
-  //   const user = await this.userService.getOne(payload.id);
-  //   const job = await this.getOne(jobId);
+  public async removeFromFavorite(currentUserId: number, jobId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ["favorites"]
+    });
 
-  //   if (job.user !== user || user.role !== UserRole.ADMIN) {
-  //     return false;
-  //   };
-  //   return job;
-  // }
+    const job = await this.jobRepository.findOne({ where: { id: jobId } });
+
+    if (!user)
+      throw new NotFoundException("User not found")
+
+    if (!job)
+      throw new NotFoundException("Job not found")
+
+    user.favorites = user.favorites.filter((job) => job.id !== jobId);
+    return this.userRepository.save(user);
+  }
+
+  public async getFavorites(currentUserId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ["favorites"]
+    });
+
+    if (!user)
+      throw new NotFoundException("User not found")
+
+    return user.favorites;
+  }
+
+
 };
