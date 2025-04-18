@@ -11,8 +11,11 @@ export class Notification {
   @Column()
   message: string
 
-  @Column()
-  jobId: number;
+  @Column({ type: "integer", nullable: true })
+  jobId: number | null;
+
+  @Column({ type: "integer", nullable: true })
+  postId: number | null;
 
   @ManyToOne(() => User, { onDelete: "CASCADE" })
   recipient: User

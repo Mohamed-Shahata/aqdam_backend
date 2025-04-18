@@ -1,0 +1,39 @@
+### Get all posts
+GET  http://localhost:5000/api/posts/following
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
+
+### Get all posts user
+GET  http://localhost:5000/api/posts/user/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
+
+### Get one post
+GET  http://localhost:5000/api/posts/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
+
+### Create post
+POST  http://localhost:5000/api/posts
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
+Content-Type: application/json
+
+{
+  "title":"Back end Develover",
+  "content":"anything",
+  "introduction":"Back end Develover expirt",
+  "objectives_learn":"Mongodb express nestjs and more",
+  "additional_tips":"no thing",
+  "use_cases":"no thing",
+  "resources":"mohamed@gmail.com"
+}
+
+### Update post
+PATCH   http://localhost:5000/api/posts/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
+Content-Type: application/json
+
+{
+  "title":"Software Develover"
+}
+
+### delete post
+DELETE http://localhost:5000/api/posts/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE

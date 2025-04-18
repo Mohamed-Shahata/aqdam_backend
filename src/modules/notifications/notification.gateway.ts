@@ -31,8 +31,8 @@ export class NotificationsGateway implements OnModuleInit {
     });
   }
 
-  async sendNotification(userId: number, notification: { message: string; jobId: number }) {
-    if (!notification || !notification.message || !notification.jobId) {
+  async sendNotification(userId: number, notification: { message: string; workId: number }) {
+    if (!notification || !notification.message || !notification.workId) {
       console.warn('Invalid notification data:', notification);
       return;
     }

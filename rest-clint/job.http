@@ -16,7 +16,7 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiO
 
 ### Create job
 POST  http://localhost:5000/api/jobs
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEyOTY1LCJleHAiOjE3NDQ4OTkzNjV9._we7UOFJox0OlwMWu2Z5bLyOeSIaAbeFQAXU3QYE8A8
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
 Content-Type: application/json
 
 {
@@ -29,8 +29,8 @@ Content-Type: application/json
 }
 
 ### Update job
-PATCH   http://localhost:5000/api/jobs/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzIsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0ODEzNDk4LCJleHAiOjE3NDQ4OTk4OTh9.YZ3PozpGtrrmoIGCZ68MCN8kQZyiWTCcMd_6jE3aGl0
+PATCH   http://localhost:5000/api/jobs/14
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
 Content-Type: application/json
 
 {

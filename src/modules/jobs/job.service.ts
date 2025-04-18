@@ -95,7 +95,7 @@ export class JobService {
 
       this.notificationGateway.sendNotification(follower.id, {
         message: notification.message,
-        jobId: newJob.id
+        workId: newJob.id
       })
     }
 
@@ -109,6 +109,7 @@ export class JobService {
     const { title, short_intro, responsibilities, requirements, extra_info, email_applay } = dto;
     const user = await this.userService.getOne(payload.id);
     const job = await this.getOne(jobId);
+
 
     if (job.user.id === user.id || user.role === UserRole.ADMIN) {
       await this.jobRepository.update(job.id,
