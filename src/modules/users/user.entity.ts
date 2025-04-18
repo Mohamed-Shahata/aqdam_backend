@@ -64,7 +64,7 @@ export class User {
   @OneToMany(() => Job, (job) => job.user)
   job: Job[]
 
-  @ManyToMany(() => Job)
+  @ManyToMany(() => Job, (job) => job.favoriteBy)
   @JoinTable()
   favorites: Job[]
 };

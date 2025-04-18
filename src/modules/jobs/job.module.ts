@@ -7,13 +7,18 @@ import { Job } from "./job.entity";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { User } from "../users/user.entity";
+import { Notification } from "../notifications/notification.entity";
+import { NotificationsGateway } from "../notifications/notification.gateway";
+import { RedisModule } from "../redis/redis.module";
+import { NotificationService } from "../notifications/notification.service";
 
 
 
 @Module({
   imports: [
     UserModule,
-    TypeOrmModule.forFeature([Job, User]),
+    RedisModule,
+    TypeOrmModule.forFeature([Job, User, Notification]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
@@ -24,6 +29,6 @@ import { User } from "../users/user.entity";
     }),
   ],
   controllers: [JobController],
-  providers: [JobService]
+  providers: [JobService, NotificationsGateway, NotificationService]
 })
 export class JobModule { };

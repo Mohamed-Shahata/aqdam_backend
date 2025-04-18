@@ -8,6 +8,9 @@ import { JWTPayload } from "src/utils/type";
 import { UpdateJobDto } from "./dto/update-job.dto";
 import { UserRole } from "src/utils/enum.roles";
 import { User } from "../users/user.entity";
+import { Notification } from "../notifications/notification.entity";
+import { NotificationsGateway } from "../notifications/notification.gateway";
+import { NotificationService } from "../notifications/notification.service";
 
 
 
@@ -17,7 +20,10 @@ export class JobService {
   constructor(
     @InjectRepository(Job) private readonly jobRepository: Repository<Job>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-    private readonly userService: UserService
+    @InjectRepository(Notification) private readonly notificationRepository: Repository<Notification>,
+    private readonly userService: UserService,
+    private readonly notificationGateway: NotificationsGateway,
+    private readonly notificationService: NotificationService
   ) { };
 
   public getAll() {
@@ -68,10 +74,35 @@ export class JobService {
       user
     });
 
+    const followers = await this.userRepository
+      .createQueryBuilder("user")
+      .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
+      .getMany()
+
+
+    const savedJob = await this.jobRepository.save(newJob);
+
+    for (const follower of followers) {
+      const notification = this.notificationRepository.create({
+        message: `${user.firstName} ${user.lastName} posted a new job: ${newJob.title}`,
+        jobId: newJob.id,
+        recipient: follower,
+        isRead: false
+      });
+      const savedNotifications = await this.notificationRepository.save(notification);
+
+      await this.notificationService.cacheNotification(savedNotifications);
+
+      this.notificationGateway.sendNotification(follower.id, {
+        message: notification.message,
+        jobId: newJob.id
+      })
+    }
+
     user.point += 5;
     await this.userRepository.save(user);
 
-    return await this.jobRepository.save(newJob);
+    return savedJob;
   };
 
   public async update(payload: JWTPayload, jobId: number, dto: UpdateJobDto) {

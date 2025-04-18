@@ -9,6 +9,8 @@ import { UserModule } from './modules/users/user.module';
 import { PostModule } from './modules/posts/post.module';
 import { JobModule } from './modules/jobs/job.module';
 import { MulterModule } from '@nestjs/platform-express';
+import { NotificationModule } from './modules/notifications/notification.module';
+import { Notification } from './modules/notifications/notification.entity';
 
 
 @Module({
@@ -17,6 +19,7 @@ import { MulterModule } from '@nestjs/platform-express';
     UserModule,
     PostModule,
     JobModule,
+    NotificationModule,
     MulterModule.register({
       dest: "./images"
     }),
@@ -30,8 +33,9 @@ import { MulterModule } from '@nestjs/platform-express';
           password: config.get<string>("DB_PASSWORD"),
           host: "localhost",
           port: config.get<number>("DB_PORT"),
+          autoLoadEntities: true,
           synchronize: true,
-          entities: [User, Post, Job]
+          entities: [User, Post, Job, Notification]
         }
       }
     }),
