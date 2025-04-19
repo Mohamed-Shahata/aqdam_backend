@@ -11,13 +11,14 @@ import { NotificationService } from "../notifications/notification.service";
 import { NotificationsGateway } from "../notifications/notification.gateway";
 import { Notification } from "../notifications/notification.entity";
 import { RedisModule } from "../redis/redis.module";
+import { Reaction } from "./likes.entity";
 
 
 @Module({
   imports: [
     UserModule,
     RedisModule,
-    TypeOrmModule.forFeature([Post, User, Notification]),
+    TypeOrmModule.forFeature([Post, User, Notification, Reaction]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({

@@ -1,6 +1,7 @@
-import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../users/user.entity";
 import { CURRENT_TIMESTAMP } from "src/utils/constant";
+import { Notification } from "../notifications/notification.entity";
 
 
 @Entity()
@@ -22,7 +23,7 @@ export class Job {
   requirements: string;
 
   @Column()
-  extra_info: string;
+  extra_info?: string;
 
   @Column()
   email_applay: string;

@@ -9,8 +9,9 @@ import { NotificationsGateway } from "../notifications/notification.gateway";
 import { NotificationService } from "../notifications/notification.service";
 import { Notification } from "../notifications/notification.entity";
 import { UpdatePostDto } from "./dto/update-post.dto";
-import { UserRole } from "src/utils/enum.roles";
+import { ReactionType, UserRole } from "src/utils/enum.roles";
 import { JWTPayload } from "src/utils/type";
+import { Reaction } from "./likes.entity";
 
 
 @Injectable()
@@ -21,18 +22,19 @@ export class PostService {
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
     @InjectRepository(Notification) private readonly notificationRepository: Repository<Notification>,
+    @InjectRepository(Reaction) private readonly reactionRepository: Repository<Reaction>,
     private readonly userService: UserService,
     private readonly notificationGateway: NotificationsGateway,
     private readonly notificationService: NotificationService
   ) { };
 
   public async create(userId: number, dto: CreatePostDto) {
-    const { title, content, introduction, objectives_learn, additional_tips, resources, use_cases } = dto;
+    const { title, content, resources } = dto;
 
     const user = await this.userService.getOne(userId);
 
     const newPost = this.postRepository.create({
-      title, content, introduction, objectives_learn, additional_tips, resources, use_cases, user
+      title, content, resources, user
     });
 
     const followers = await this.userRepository
@@ -44,9 +46,8 @@ export class PostService {
 
     for (const follower of followers) {
       const notification = this.notificationRepository.create({
-        message: `${user.firstName} ${user.lastName} posted a new job: ${newPost.title}`,
-        jobId: null,
-        postId: newPost.id,
+        message: `${user.firstName} ${user.lastName} posted a new post`,
+        post: newPost,
         recipient: follower,
         isRead: false
       })
@@ -57,7 +58,7 @@ export class PostService {
 
       this.notificationGateway.sendNotification(follower.id, {
         message: notification.message,
-        workId: newPost.id
+        post: newPost
       })
     }
 
@@ -100,7 +101,7 @@ export class PostService {
 
 
   public async update(payload: JWTPayload, postId: number, dto: UpdatePostDto) {
-    const { title, content, introduction, objectives_learn, additional_tips, resources, use_cases } = dto;
+    const { title, content, resources } = dto;
 
     const user = await this.userService.getOne(payload.id);
     const post = await this.getOne(postId);
@@ -108,7 +109,7 @@ export class PostService {
     if (post.user.id === user.id || user.role === UserRole.ADMIN) {
       await this.postRepository.update(postId,
         {
-          title, content, introduction, objectives_learn, additional_tips, resources, use_cases
+          title, content, resources
         });
       return this.getOne(post.id);
 
@@ -125,5 +126,79 @@ export class PostService {
       return { message: "Delete post success" };
     };
     throw new ForbiddenException("Can't delete this post");
+  }
+
+
+  public async reactionToPost(currentUserId: number, postId: number, type: ReactionType) {
+    const user = await this.userService.getOne(currentUserId);
+    const post = await this.getOne(postId);
+
+    const existingReaction = await this.reactionRepository.findOne({
+      where: { user: { id: user.id }, post: { id: post.id } }
+    })
+
+    if (existingReaction) {
+      existingReaction.type = type;
+      return this.reactionRepository.save(existingReaction)
+    }
+
+    const reaction = this.reactionRepository.create({
+      user: { id: user.id },
+      post: { id: post.id },
+      type
+    });
+    return this.reactionRepository.save(reaction);
+  }
+
+  public async removeReactionFromPost(currentUserId: number, postId: number) {
+    const user = await this.userService.getOne(currentUserId);
+    const post = await this.getOne(postId);
+
+    const reaction = await this.reactionRepository.findOne({
+      where: { user: { id: user.id }, post: { id: post.id } }
+    })
+
+    if (!reaction)
+      throw new NotFoundException("Reaction not found")
+
+    return this.reactionRepository.remove(reaction);
+  }
+
+  public async getReactionFromPost(postId: number) {
+    const post = await this.getOne(postId);
+
+    const reactions = await this.reactionRepository.find({
+      where: { post: { id: post.id } }
+    })
+
+    const lengthObject = {
+      benefited: 0,
+      not_benefited: 0
+    }
+
+    for (const reaction of reactions) {
+      reaction.type === ReactionType.BENEFITED ? lengthObject.benefited++ : lengthObject.not_benefited++
+    }
+
+    return lengthObject;
+  }
+
+  public async getReactionCurrentUser(userId: number) {
+    const user = await this.userService.getOne(userId);
+
+    const reactions = await this.reactionRepository.find({
+      where: { user: { id: user.id } }
+    })
+
+    const array: any[] = [];
+
+    for (let i = 0; i < reactions.length; i++) {
+      array.push({
+        postId: reactions[i].post.id,
+        type: reactions[i].type
+      });
+    }
+
+    return array;
   }
 };

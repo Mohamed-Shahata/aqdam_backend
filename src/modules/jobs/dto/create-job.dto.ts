@@ -7,7 +7,6 @@ export class CreateJobDto {
   title: string;
 
   @IsString()
-  @MinLength(2)
   @IsOptional()
   short_intro?: string;
 
@@ -20,8 +19,8 @@ export class CreateJobDto {
   requirements: string;
 
   @IsString()
-  @MinLength(2)
-  extra_info: string;
+  @IsOptional()
+  extra_info?: string;
 
   @IsString()
   @Length(2, 250)

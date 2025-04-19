@@ -1,7 +1,8 @@
 import { UserRole } from "src/utils/enum.roles";
-import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, JoinTable, Like, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Job } from "../jobs/job.entity";
 import { Post } from "../posts/post.entity";
+import { Reaction } from "../posts/likes.entity";
 
 @Entity()
 export class User {
@@ -71,4 +72,7 @@ export class User {
   @ManyToMany(() => Job, (job) => job.favoriteBy)
   @JoinTable()
   favorites: Job[]
+
+  @OneToMany(() => Reaction, (reaction) => reaction.user)
+  reaction: Reaction[]
 };

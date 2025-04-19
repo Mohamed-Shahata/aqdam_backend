@@ -1,5 +1,6 @@
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { User } from "../users/user.entity";
+import { Reaction } from "./likes.entity";
 
 
 @Entity()
@@ -11,19 +12,7 @@ export class Post {
   title: string
 
   @Column({ type: "text" })
-  introduction: string
-
-  @Column({ type: "text" })
-  objectives_learn: string
-
-  @Column({ type: "text" })
   content: string;
-
-  @Column({ type: "text", nullable: true })
-  use_cases?: string
-
-  @Column({ type: "text", nullable: true })
-  additional_tips?: string
 
   @Column({ type: "text", nullable: true })
   resources?: string
@@ -36,4 +25,7 @@ export class Post {
 
   @ManyToOne(() => User, (user) => user.posts, { eager: true })
   user: User
+
+  @OneToMany(() => Reaction, (reaction) => reaction.post)
+  reaction: Reaction[]
 };

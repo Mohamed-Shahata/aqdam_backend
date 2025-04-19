@@ -2,6 +2,8 @@ import { WebSocketGateway, WebSocketServer } from '@nestjs/websockets';
 import { Server } from 'socket.io';
 import { Injectable, OnModuleInit } from '@nestjs/common';
 import { RedisService } from '../redis/redis.service';
+import { Post } from '../posts/post.entity';
+import { Job } from '../jobs/job.entity';
 
 @WebSocketGateway({ cors: { origin: 'http://localhost:3000', credentials: true } })
 @Injectable()
@@ -31,11 +33,11 @@ export class NotificationsGateway implements OnModuleInit {
     });
   }
 
-  async sendNotification(userId: number, notification: { message: string; workId: number }) {
-    if (!notification || !notification.message || !notification.workId) {
+  async sendNotification(userId: number, notification: { message: string; post?: Post, job?: Job }) {
+    if (!notification || !notification.message || !(notification.post || notification.job)) {
       console.warn('Invalid notification data:', notification);
       return;
     }
-    await this.redisService.publish(`user:${userId}`, JSON.stringify(notification));
+    return await this.redisService.publish(`user:${userId}`, JSON.stringify(notification));
   }
 }

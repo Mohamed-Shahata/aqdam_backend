@@ -1,5 +1,7 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { User } from "../users/user.entity";
+import { Job } from "../jobs/job.entity";
+import { Post } from "../posts/post.entity";
 
 
 @Entity()
@@ -11,11 +13,11 @@ export class Notification {
   @Column()
   message: string
 
-  @Column({ type: "integer", nullable: true })
-  jobId: number | null;
+  @ManyToOne(() => Job, { onDelete: "CASCADE", nullable: true })
+  job: Job;
 
-  @Column({ type: "integer", nullable: true })
-  postId: number | null;
+  @ManyToOne(() => Post, { onDelete: "CASCADE", nullable: true })
+  post: Post;
 
   @ManyToOne(() => User, { onDelete: "CASCADE" })
   recipient: User

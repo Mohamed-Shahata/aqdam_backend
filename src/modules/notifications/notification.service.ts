@@ -27,7 +27,7 @@ export class NotificationService {
     const notifications = await this.notificationsRepository.find({
       where: { recipient: { id: userId } },
       order: { createdAt: 'DESC' },
-      relations: ['recipient'],
+      relations: ['recipient', 'post', "job"],
     });
 
     await this.redisService.set(cacheKey, JSON.stringify(notifications), 300);
@@ -37,7 +37,7 @@ export class NotificationService {
   async markNotificationAsRead(notificationId: number, userId: number) {
     const notification = await this.notificationsRepository.findOne({
       where: { id: notificationId },
-      relations: ['recipient'],
+      relations: ['recipient', 'post', "job"],
     });
 
     if (!notification) {

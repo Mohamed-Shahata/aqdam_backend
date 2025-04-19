@@ -5,6 +5,7 @@ import { CurrentUser } from "../auth/decorators/current-user.decorator";
 import { JWTPayload } from "src/utils/type";
 import { CreatePostDto } from "./dto/create-post.dto";
 import { UpdatePostDto } from "./dto/update-post.dto";
+import { ReactionType } from "src/utils/enum.roles";
 
 
 
@@ -49,14 +50,37 @@ export class PostController {
     @Param("id", ParseIntPipe) id: number,
     @Body() dto: UpdatePostDto
   ) {
-    console.log(id);
     return this.postService.update(payload, id, dto);
   }
 
-  // DELETE: ~/api/jobs/:id
+  // DELETE: ~/api/posts/:id
   @Delete(":id")
   @UseGuards(AuthGuard)
   public deletePost(@CurrentUser() payload: JWTPayload, @Param("id", ParseIntPipe) id: number) {
     return this.postService.delete(payload, id);
+  }
+
+  @Post(":id/reaction")
+  @UseGuards(AuthGuard)
+  public reaction(@CurrentUser() payload: JWTPayload, @Param("id", ParseIntPipe) id: number, @Body("type") type: ReactionType) {
+    return this.postService.reactionToPost(payload.id, id, type);
+  }
+
+  @Delete(":id/reaction")
+  @UseGuards(AuthGuard)
+  public removeReaction(@CurrentUser() payload: JWTPayload, @Param("id", ParseIntPipe) id: number) {
+    return this.postService.removeReactionFromPost(payload.id, id);
+  }
+
+  @Get(":id/reactions")
+  @UseGuards(AuthGuard)
+  public getReaction(@Param("id", ParseIntPipe) id: number) {
+    return this.postService.getReactionFromPost(id);
+  }
+
+  @Get("reactions/me")
+  @UseGuards(AuthGuard)
+  public getReactionMe(@CurrentUser() payload: JWTPayload) {
+    return this.postService.getReactionCurrentUser(payload.id);
   }
 };

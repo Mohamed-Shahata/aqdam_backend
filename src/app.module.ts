@@ -11,6 +11,7 @@ import { JobModule } from './modules/jobs/job.module';
 import { MulterModule } from '@nestjs/platform-express';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { Notification } from './modules/notifications/notification.entity';
+import { Reaction } from './modules/posts/likes.entity';
 
 
 @Module({
@@ -35,7 +36,7 @@ import { Notification } from './modules/notifications/notification.entity';
           port: config.get<number>("DB_PORT"),
           autoLoadEntities: true,
           synchronize: true,
-          entities: [User, Post, Job, Notification]
+          entities: [User, Post, Job, Notification, Reaction]
         }
       }
     }),

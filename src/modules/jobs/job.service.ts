@@ -84,8 +84,8 @@ export class JobService {
 
     for (const follower of followers) {
       const notification = this.notificationRepository.create({
-        message: `${user.firstName} ${user.lastName} posted a new job: ${newJob.title}`,
-        jobId: newJob.id,
+        message: `${user.firstName} ${user.lastName} posted a new job`,
+        job: newJob,
         recipient: follower,
         isRead: false
       });
@@ -95,7 +95,7 @@ export class JobService {
 
       this.notificationGateway.sendNotification(follower.id, {
         message: notification.message,
-        workId: newJob.id
+        job: newJob
       })
     }
 
