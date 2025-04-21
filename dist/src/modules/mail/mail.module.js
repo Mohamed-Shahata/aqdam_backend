@@ -35,7 +35,10 @@ exports.MailModule = MailModule = __decorate([
                         dir: (0, path_1.join)(__dirname, "template"),
                         adapter: new ejs_adapter_1.EjsAdapter({
                             inlineCssEnabled: true
-                        })
+                        }),
+                        options: {
+                            strict: true,
+                        },
                     }
                 })
             })
