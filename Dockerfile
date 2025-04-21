@@ -1,23 +1,26 @@
-# اختيار صورة الأساس (Base image)
+# استخدام صورة Node.js الأساسية
 FROM node:18-alpine
 
-# تعيين مجلد العمل داخل الحاوية
+# تعيين مجلد العمل
 WORKDIR /app
 
-# نسخ الملفات إلى الحاوية
+# نسخ ملف package.json و package-lock.json أو yarn.lock
 COPY package*.json ./
 
-# تثبيت التبعيات
+# تثبيت التبعيات (بما في ذلك NestJS CLI)
 RUN npm install --production
 
-# نسخ باقي ملفات التطبيق
+# تثبيت NestJS CLI عالميًا لكي يعمل الأمر 'nest'
+RUN npm install -g @nestjs/cli
+
+# نسخ باقي الملفات
 COPY . .
 
-# بناء التطبيق إذا لزم الأمر (إذا كان لديك TypeScript أو بنية خاصة)
+# بناء التطبيق
 RUN npm run build
 
 # تعيين المنفذ الذي سيعمل عليه التطبيق
 EXPOSE 5000
 
-# تشغيل التطبيق
+# بدء التطبيق في بيئة الإنتاج
 CMD ["npm", "run", "start:prod"]
