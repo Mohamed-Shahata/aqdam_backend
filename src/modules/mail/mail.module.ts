@@ -20,13 +20,10 @@ import { MailService } from "./mail.service";
           }
         },
         template: {
-          dir: join(__dirname, "template"),
+          dir: join(__dirname, "templates"),
           adapter: new EjsAdapter({
             inlineCssEnabled: true
-          }),
-          options: {
-            strict: true,
-          },
+          })
         }
       })
     })
