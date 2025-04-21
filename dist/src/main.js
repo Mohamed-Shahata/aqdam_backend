@@ -7,6 +7,7 @@ const compression = require("compression");
 async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix("api");
+    app.use(compression());
     app.enableCors({
         origin: '*',
         methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT'],
@@ -17,7 +18,6 @@ async function bootstrap() {
         whitelist: true,
         transform: true,
     }));
-    app.use(compression());
     await app.listen(5000);
 }
 bootstrap();

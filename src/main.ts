@@ -8,6 +8,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
+  app.use(compression());
   app.enableCors({
     origin: '*',
     methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT'],
@@ -21,7 +22,7 @@ async function bootstrap() {
       transform: true,
     }),
   );
-  app.use(compression());
+
 
   await app.listen(5000);
 }
