@@ -8,10 +8,11 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
 
   app.enableCors({
-    origin: '*',
+    origin: ['http://localhost:3000', 'https://aqdambackend-production.up.railway.app'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true,
+
   });
   app.useGlobalPipes(
     new ValidationPipe({
