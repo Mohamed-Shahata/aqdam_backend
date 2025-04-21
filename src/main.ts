@@ -8,12 +8,12 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
 
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://aqdambackend-production.up.railway.app'],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
-
+    origin: '*',  // يسمح لكل الدومينات
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],  // يحدد الطرق المسموح بها
+    allowedHeaders: ['Content-Type', 'Authorization'],  // يحدد الهيدرات المسموح بها
+    credentials: true,  // لو كنت تستخدم ملفات تعريف الارتباط (Cookies) أو بيانات اعتماد
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
