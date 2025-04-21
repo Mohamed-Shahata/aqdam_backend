@@ -24,7 +24,7 @@ let MailService = class MailService {
                 from: process.env.USERNAME_EMAIL,
                 to: email,
                 subject: "Verify Code",
-                template: "verify-code.ejs",
+                template: "verify-code",
                 context: { email, code }
             });
         }
