@@ -18,7 +18,7 @@ async function bootstrap() {
         whitelist: true,
         transform: true,
     }));
-    await app.listen(5000);
+    await app.listen(process.env.PORT || 5000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
