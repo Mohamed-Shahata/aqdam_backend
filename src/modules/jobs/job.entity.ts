@@ -28,6 +28,9 @@ export class Job {
   @Column()
   email_applay: string;
 
+  @Column({ default: "job" })
+  type: string
+
   @CreateDateColumn({ type: "timestamp", default: () => CURRENT_TIMESTAMP })
   createdAt: Date
 

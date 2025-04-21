@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { PostService } from "./post.service";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
@@ -15,10 +15,25 @@ export class PostController {
   constructor(private readonly postService: PostService) { };
 
   // GET: ~/api/posts
-  @Get("following")
+  // @Get("following")
+  // @UseGuards(AuthGuard)
+  // public getAllPostsFollowing(@CurrentUser() payload: JWTPayload) {
+  //   return this.postService.getAllFollowing(payload.id);
+  // }
+
+  // GET: ~/api/posts/feeds?page=2&limit=10
+  @Get('feeds')
   @UseGuards(AuthGuard)
-  public getAllPostsFollowing(@CurrentUser() payload: JWTPayload) {
-    return this.postService.getAllFollowing(payload.id);
+  public async getAllFeeds(
+    @CurrentUser() payload: JWTPayload,
+    @Query('page') page: string,
+    @Query('limit') limit: string
+  ) {
+
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+
+    return this.postService.getAllPostsAndJobsFollowing(payload.id, pageNumber, limitNumber);
   }
 
   // GET: ~/api/posts

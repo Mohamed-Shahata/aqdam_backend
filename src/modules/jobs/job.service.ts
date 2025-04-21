@@ -1,4 +1,4 @@
-import { BadRequestException, ForbiddenException, Injectable, NotFoundException } from "@nestjs/common";
+import { BadRequestException, ForbiddenException, Inject, Injectable, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Job } from "./job.entity";
 import { In, Repository } from "typeorm";
@@ -11,6 +11,7 @@ import { User } from "../users/user.entity";
 import { Notification } from "../notifications/notification.entity";
 import { NotificationsGateway } from "../notifications/notification.gateway";
 import { NotificationService } from "../notifications/notification.service";
+import { RedisService } from "../redis/redis.service";
 
 
 
@@ -23,35 +24,58 @@ export class JobService {
     @InjectRepository(Notification) private readonly notificationRepository: Repository<Notification>,
     private readonly userService: UserService,
     private readonly notificationGateway: NotificationsGateway,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly redisService: RedisService
   ) { };
 
   public getAll() {
     return this.jobRepository.find({ order: { createdAt: "DESC" } });
   };
 
-  public async getAllFollowing(currentUserId: number) {
-    const user = await this.userRepository.findOne({
-      where: { id: currentUserId },
-      relations: ["following"]
-    })
+  // public async getAllFollowing(currentUserId: number) {
+  //   const user = await this.userRepository.findOne({
+  //     where: { id: currentUserId },
+  //     relations: ["following"]
+  //   });
 
-    if (!user)
-      throw new NotFoundException("User not found");
+  //   if (!user) {
+  //     throw new NotFoundException("User not found");
+  //   }
 
-    const followingIds = user.following.map(f => f.id);
+  //   const cacheKey = `user_feed_${user.id}`;
+  //   const cachePostUser = await this.redisService.get(cacheKey);
+  //   if (cachePostUser) {
+  //     try {
+  //       const parsed = JSON.parse(cachePostUser);
+  //       return Array.isArray(parsed) ? parsed : [];
+  //     } catch (error) {
+  //       console.error('Redis cache parse error:', error);
+  //       console.log('Raw cache data:', cachePostUser);
+  //     }
+  //   }
 
-    if (!followingIds.length) return [];
-    return this.jobRepository.find({
-      where: { user: In(followingIds) },
-      order: { createdAt: "DESC" },
-      relations: ["user"]
-    })
-  };
+  //   const followingIds = user.following.map(f => f.id);
+  //   if (!followingIds.length) return [];
+
+  //   const jobs = await this.jobRepository.find({
+  //     where: { user: In(followingIds) },
+  //     order: { createdAt: "DESC" },
+  //     relations: ["user"]
+  //   });
+
+  //   try {
+  //     await this.redisService.set(`user_feed_${user.id}`, JSON.stringify(jobs), 300);
+  //     console.log("Cache set successfully");
+  //   } catch (error) {
+  //     console.error("Error setting cache:", error);
+  //   }
+
+  //   return jobs;
+  // }
 
   public async getAllForUserId(id: number) {
     const user = await this.userService.getOne(id);
-    return await this.jobRepository.find({ where: { user } });
+    return await this.jobRepository.find({ where: { user }, order: { createdAt: "DESC" } });
   };
 
   public async getOne(id: number) {
@@ -76,35 +100,39 @@ export class JobService {
 
     const followers = await this.userRepository
       .createQueryBuilder("user")
-      .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
-      .getMany()
-
+      .innerJoin("user_followers", "uf", "uf.follower_id = user.id AND uf.following_id = :userId", { userId: user.id })
+      .getMany();
 
     const savedJob = await this.jobRepository.save(newJob);
 
+
     for (const follower of followers) {
-      const notification = this.notificationRepository.create({
-        message: `${user.firstName} ${user.lastName} posted a new job`,
-        job: newJob,
-        recipient: follower,
-        isRead: false
-      });
-      const savedNotifications = await this.notificationRepository.save(notification);
+      if (follower.id !== user.id) {
+        await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+        const notification = this.notificationRepository.create({
+          message: `${user.firstName} ${user.lastName} posted a new post`,
+          job: newJob,
+          recipient: follower,
+          isRead: false
+        });
 
-      await this.notificationService.cacheNotification(savedNotifications);
+        const savedNotifications = await this.notificationRepository.save(notification);
 
-      this.notificationGateway.sendNotification(follower.id, {
-        message: notification.message,
-        job: newJob
-      })
+        await this.notificationService.cacheNotification(savedNotifications);
+
+        await this.notificationGateway.sendNotification(follower.id, {
+          message: notification.message,
+          job: newJob
+        });
+      }
     }
+
 
     user.point += 5;
     await this.userRepository.save(user);
 
     return savedJob;
-  };
-
+  }
   public async update(payload: JWTPayload, jobId: number, dto: UpdateJobDto) {
     const { title, short_intro, responsibilities, requirements, extra_info, email_applay } = dto;
     const user = await this.userService.getOne(payload.id);
@@ -121,6 +149,18 @@ export class JobService {
           extra_info,
           email_applay
         });
+
+      // cacheing
+      const followers = await this.userRepository
+        .createQueryBuilder("user")
+        .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
+        .getMany()
+
+      for (const follower of followers) {
+        await this.redisService.delete(`notifications:${follower.id}`);
+        await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+      }
+
       return this.getOne(job.id);
 
     };
@@ -132,9 +172,23 @@ export class JobService {
     const job = await this.getOne(jobId);
 
     if (job.user.id === user.id || user.role === UserRole.ADMIN) {
+
+      // cacheing
+      const followers = await this.userRepository
+        .createQueryBuilder("user")
+        .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
+        .getMany()
+
+      for (const follower of followers) {
+        await this.redisService.delete(`notifications:${follower.id}`);
+        await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+      }
+
       await this.jobRepository.remove(job);
       return { message: "Delete job success" };
     };
+
+
     throw new ForbiddenException("Can't delete this job");
   }
 

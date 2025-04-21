@@ -60,4 +60,40 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async get(key: string): Promise<string | null> {
     return this.client.get(key);
   }
+
+  async delete(key: string) {
+    return this.client.del(key)
+  }
+
+  async deleteByPattern(pattern: string): Promise<void> {
+    const stream = this.client.scanStream({
+      match: pattern,
+      count: 100, // عدد المفاتيح اللي بتتفحص في كل دفعة
+    });
+
+    return new Promise<void>((resolve, reject) => {
+      stream.on("data", async (keys: string[]) => {
+        if (keys.length > 0) {
+          try {
+            // حذف المفاتيح باستخدام DEL
+            await this.client.del(...keys);
+          } catch (error) {
+            console.error(`Error deleting keys for pattern ${pattern}:`, error);
+            reject(error);
+          }
+        }
+      });
+
+      stream.on("end", () => {
+        // الـ scan خلّص
+        resolve();
+      });
+
+      stream.on("error", (error) => {
+        // معالجة أي أخطاء أثناء الـ scan
+        console.error(`Error scanning keys for pattern ${pattern}:`, error);
+        reject(error);
+      });
+    });
+  }
 }

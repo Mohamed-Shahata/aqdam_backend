@@ -20,11 +20,11 @@ export class JobController {
   }
 
   // GET: ~/api/jobs
-  @Get("following")
-  @UseGuards(AuthGuard)
-  public getAllJobsFollowing(@CurrentUser() payload: JWTPayload) {
-    return this.jobService.getAllFollowing(payload.id);
-  }
+  // @Get("following")
+  // @UseGuards(AuthGuard)
+  // public getAllJobsFollowing(@CurrentUser() payload: JWTPayload) {
+  //   return this.jobService.getAllFollowing(payload.id);
+  // }
 
   // GET: ~/api/jobs
   @Get("user/:userId")

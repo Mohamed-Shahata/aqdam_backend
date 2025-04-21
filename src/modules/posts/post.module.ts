@@ -12,13 +12,16 @@ import { NotificationsGateway } from "../notifications/notification.gateway";
 import { Notification } from "../notifications/notification.entity";
 import { RedisModule } from "../redis/redis.module";
 import { Reaction } from "./likes.entity";
+import { JobModule } from "../jobs/job.module";
+import { Job } from "../jobs/job.entity";
 
 
 @Module({
   imports: [
     UserModule,
     RedisModule,
-    TypeOrmModule.forFeature([Post, User, Notification, Reaction]),
+    JobModule,
+    TypeOrmModule.forFeature([Post, User, Notification, Reaction, Job]),
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: (config: ConfigService) => ({

@@ -17,6 +17,9 @@ export class Post {
   @Column({ type: "text", nullable: true })
   resources?: string
 
+  @Column({ default: "post" })
+  type: string
+
   @CreateDateColumn()
   createdAt: Date
 

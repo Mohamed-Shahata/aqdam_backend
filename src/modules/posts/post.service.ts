@@ -12,6 +12,8 @@ import { UpdatePostDto } from "./dto/update-post.dto";
 import { ReactionType, UserRole } from "src/utils/enum.roles";
 import { JWTPayload } from "src/utils/type";
 import { Reaction } from "./likes.entity";
+import { RedisService } from "../redis/redis.service";
+import { Job } from "../jobs/job.entity";
 
 
 @Injectable()
@@ -21,11 +23,13 @@ export class PostService {
   constructor(
     @InjectRepository(Post) private readonly postRepository: Repository<Post>,
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Job) private readonly jobRepository: Repository<Job>,
     @InjectRepository(Notification) private readonly notificationRepository: Repository<Notification>,
     @InjectRepository(Reaction) private readonly reactionRepository: Repository<Reaction>,
     private readonly userService: UserService,
     private readonly notificationGateway: NotificationsGateway,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
+    private readonly redisService: RedisService
   ) { };
 
   public async create(userId: number, dto: CreatePostDto) {
@@ -39,57 +43,133 @@ export class PostService {
 
     const followers = await this.userRepository
       .createQueryBuilder("user")
-      .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
-      .getMany()
+      .innerJoin("user_followers", "uf", "uf.follower_id = user.id AND uf.following_id = :userId", { userId: user.id })
+      .getMany();
 
     const savedPost = await this.postRepository.save(newPost);
 
     for (const follower of followers) {
-      const notification = this.notificationRepository.create({
-        message: `${user.firstName} ${user.lastName} posted a new post`,
-        post: newPost,
-        recipient: follower,
-        isRead: false
-      })
+      if (follower.id !== user.id) {
+        await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+        const notification = this.notificationRepository.create({
+          message: `${user.firstName} ${user.lastName} posted a new post`,
+          post: newPost,
+          recipient: follower,
+          isRead: false
+        });
 
-      const savedNotifications = await this.notificationRepository.save(notification);
+        const savedNotifications = await this.notificationRepository.save(notification);
 
-      await this.notificationService.cacheNotification(savedNotifications);
+        await this.notificationService.cacheNotification(savedNotifications);
 
-      this.notificationGateway.sendNotification(follower.id, {
-        message: notification.message,
-        post: newPost
-      })
+        await this.notificationGateway.sendNotification(follower.id, {
+          message: notification.message,
+          post: newPost
+        });
+      }
     }
 
     user.point += 6;
     await this.userRepository.save(user);
     return savedPost;
-  };
+  }
 
-  public async getAllFollowing(userId: number) {
+  public async getAllPostsAndJobsFollowing(userId: number, page: number = 1, limit: number = 10) {
+    page = Math.max(1, page);
+    limit = Math.max(1, limit);
+
     const user = await this.userRepository.findOne({
       where: { id: userId },
-      relations: ["following"]
+      relations: ["following"],
     });
+    if (!user) throw new NotFoundException("User not found");
 
-    if (!user)
-      throw new NotFoundException("User not found");
+    const cacheKey = `user_feed_${user.id}_page_${page}_limit_${limit}`;
+    const cachePostUser = await this.redisService.get(cacheKey);
 
-    const followingIds = user.following.map(f => f.id);
+    if (cachePostUser) {
+      try {
+        const parsed = JSON.parse(cachePostUser);
+        if (parsed && parsed.data) {
+          return parsed;
+        }
+      } catch (error) {
+        console.error("Redis cache parse error:", error);
+      }
+    }
 
-    if (followingIds.length === 0) return [];
-    return this.postRepository.find({
+    const followingIds = user.following.map((f) => f.id);
+
+    const [posts, totalPosts] = await this.postRepository.findAndCount({
       where: { user: In(followingIds) },
       order: { createdAt: "DESC" },
-      relations: ["user"]
-    })
-  };
+      relations: ["user"],
+    });
+
+    const [jobs, totalJobs] = await this.jobRepository.findAndCount({
+      where: { user: In(followingIds) },
+      order: { createdAt: "DESC" },
+      relations: ["user"],
+    });
+
+    const feeds = [...jobs, ...posts];
+
+    const sortedFeeds = feeds.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    const startIndex = (page - 1) * limit;
+    const paginatedFeeds = sortedFeeds.slice(startIndex, startIndex + limit);
+
+    const total = totalPosts + totalJobs;
+    const totalPages = Math.ceil(total / limit);
+
+    const response = {
+      data: paginatedFeeds,
+      total,
+      totalPages,
+      currentPage: page,
+      limit,
+    };
+
+    await this.redisService.set(cacheKey, JSON.stringify(response), 60);
+    return response;
+  }
+  // public async getAllFollowing(userId: number) {
+  //   const user = await this.userRepository.findOne({
+  //     where: { id: userId },
+  //     relations: ["following"]
+  //   });
+
+  //   if (!user)
+  //     throw new NotFoundException("User not found");
+
+  //   const cacheKey = `user_feed_${user.id}`;
+  //   const cachePostUser = await this.redisService.get(cacheKey);
+  //   if (cachePostUser) {
+  //     try {
+  //       const parsed = JSON.parse(cachePostUser);
+  //       return Array.isArray(parsed) ? parsed : [];
+  //     } catch (error) {
+  //       console.error('Redis cache parse error:', error);
+  //     }
+  //   }
+
+  //   const followingIds = user.following.map(f => f.id);
+
+  //   const posts = await this.postRepository.find({
+  //     where: { user: In(followingIds) },
+  //     order: { createdAt: "DESC" },
+  //     relations: ["user"]
+  //   });
+
+  //   await this.redisService.set(cacheKey, JSON.stringify(posts), 300);
+  //   return posts;
+  // };
 
   public async getAllForUserId(currentUserId: number) {
     const user = await this.userService.getOne(currentUserId);
     return this.postRepository.find({
-      where: { user }
+      where: { user },
+      order: { createdAt: "DESC" }
     })
   }
 
@@ -111,6 +191,18 @@ export class PostService {
         {
           title, content, resources
         });
+
+      // cacheing
+      const followers = await this.userRepository
+        .createQueryBuilder("user")
+        .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
+        .getMany()
+
+      for (const follower of followers) {
+        await this.redisService.delete(`notifications:${follower.id}`);
+        await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+      }
+
       return this.getOne(post.id);
 
     };
@@ -122,7 +214,22 @@ export class PostService {
     const post = await this.getOne(postId);
 
     if (post.user.id === user.id || user.role === UserRole.ADMIN) {
+
+      // cacheing
+      const followers = await this.userRepository
+        .createQueryBuilder("user")
+        .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
+        .getMany()
+
+      for (const follower of followers) {
+        await this.redisService.delete(`notifications:${follower.id}`);
+        await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+      }
+
+
       await this.postRepository.remove(post);
+      user.point -= 6;
+      await this.userRepository.save(user);
       return { message: "Delete post success" };
     };
     throw new ForbiddenException("Can't delete this post");

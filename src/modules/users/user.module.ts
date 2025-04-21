@@ -6,11 +6,13 @@ import { User } from "./user.entity";
 import { CloudinaryModule } from "../uploads/cloudinary.module";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
+import { RedisModule } from "../redis/redis.module";
 
 
 @Module({
   imports: [
     CloudinaryModule,
+    RedisModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       inject: [ConfigService],

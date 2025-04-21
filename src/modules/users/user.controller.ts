@@ -23,11 +23,30 @@ export class UserController {
     return this.userService.getAll(search);
   };
 
+  @Get("people")
+  @UseGuards(AuthGuard)
+  public getAllPeople(
+    @Query("search") search: string,
+    @Query('page') page: string,
+    @Query('limit') limit: string
+  ) {
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    return this.userService.getAllPeople(search, pageNumber, limitNumber);
+  };
+
   // GET: ~/api/users/:id
   @Get(":id")
   @UseGuards(AuthGuard)
   public getOneUser(@Param("id", ParseIntPipe) id: number) {
     return this.userService.getOne(id);
+  };
+
+  // GET: ~/api/users/user/:id
+  @Get("user/:id")
+  @UseGuards(AuthGuard)
+  public getOneUserCache(@Param("id", ParseIntPipe) id: number) {
+    return this.userService.getOneUserCache(id);
   };
 
   // GET: ~/api/users/:id
@@ -86,6 +105,13 @@ export class UserController {
   @Post(":id/following")
   public getFollowingUser(@Param("id", ParseIntPipe) id: number) {
     return this.userService.getFollowing(id);
+  }
+
+  // GET: ~/api/users/following/me
+  @UseGuards(AuthGuard)
+  @Get("following/me")
+  public getFollowingUserMe(@CurrentUser() payload: JWTPayload) {
+    return this.userService.getFollowingMe(payload.id);
   }
   // POST: ~/api/users/followers
   @UseGuards(AuthGuard)

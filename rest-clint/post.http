@@ -2,6 +2,10 @@
 GET  http://localhost:5000/api/posts/following
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
 
+### Get all posts
+GET  http://localhost:5000/api/posts/feeds?page=1&limit=2
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUxNzYwNjksImV4cCI6MTc0NTI2MjQ2OX0.sscGwPelKaY0t0tvJses6aFbC-cBE3Q1Oissn4xNjWs
+
 ### Get all posts user
 GET  http://localhost:5000/api/posts/user/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
