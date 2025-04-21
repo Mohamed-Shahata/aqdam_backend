@@ -11,7 +11,7 @@ export const dataSourceOptions: DataSourceOptions = {
   type: "postgres",
   url: process.env.DATABASE_URI,
   entities: [User, Post, Job, Reaction, Notification],
-  migrations: ['dist/db/migrations/*.js']
+  migrations: ['db/migrations/*.ts']
 }
 
 const dataSource = new DataSource(dataSourceOptions);

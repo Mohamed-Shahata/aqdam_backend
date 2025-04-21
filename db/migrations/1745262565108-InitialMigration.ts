@@ -1,7 +1,7 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
-export class Initial1745229500580 implements MigrationInterface {
-    name = 'Initial1745229500580'
+export class InitialMigration1745262565108 implements MigrationInterface {
+    name = 'InitialMigration1745262565108'
 
     public async up(queryRunner: QueryRunner): Promise<void> {
         await queryRunner.query(`CREATE TYPE "public"."reaction_type_enum" AS ENUM('benefited', 'not_benefited')`);
