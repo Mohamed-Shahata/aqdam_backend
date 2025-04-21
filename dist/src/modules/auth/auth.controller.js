@@ -25,6 +25,7 @@ let AuthController = class AuthController {
     }
     ;
     register(dto) {
+        console.log(dto);
         return this.authService.register(dto);
     }
     verifyCode(dto) {

@@ -7,12 +7,12 @@ async function bootstrap() {
     const app = await core_1.NestFactory.create(app_module_1.AppModule);
     app.setGlobalPrefix("api");
     app.enableCors({
-        origin: "http://localhost:3000"
+        origin: '*'
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         forbidNonWhitelisted: true,
         whitelist: true,
-        transform: true
+        transform: true,
     }));
     await app.listen(5000);
 }
