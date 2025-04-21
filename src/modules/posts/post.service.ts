@@ -113,20 +113,24 @@ export class PostService {
 
     const followingIds = user.following.map((f) => f.id);
 
-    const [posts, totalPosts] = await this.postRepository.findAndCount({
-      where: { user: In(followingIds) },
-      order: { createdAt: "DESC" },
-      relations: ["user"],
-    });
+    // Combine posts and jobs query into one with `Promise.all`
+    const [postsPromise, jobsPromise] = [
+      this.postRepository.findAndCount({
+        where: { user: In(followingIds) },
+        order: { createdAt: "DESC" },
+        relations: ["user"],
+      }),
+      this.jobRepository.findAndCount({
+        where: { user: In(followingIds) },
+        order: { createdAt: "DESC" },
+        relations: ["user"],
+      })
+    ];
 
-    const [jobs, totalJobs] = await this.jobRepository.findAndCount({
-      where: { user: In(followingIds) },
-      order: { createdAt: "DESC" },
-      relations: ["user"],
-    });
+    const [posts, totalPosts] = await postsPromise;
+    const [jobs, totalJobs] = await jobsPromise;
 
     const feeds = [...jobs, ...posts];
-
     const sortedFeeds = feeds.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     const startIndex = (page - 1) * limit;
@@ -143,9 +147,10 @@ export class PostService {
       limit,
     };
 
-    await this.redisService.set(cacheKey, JSON.stringify(response), 60);
+    await this.redisService.set(cacheKey, JSON.stringify(response), 60); // Can adjust TTL based on use case
     return response;
   }
+
   // public async getAllFollowing(userId: number) {
   //   const user = await this.userRepository.findOne({
   //     where: { id: userId },
