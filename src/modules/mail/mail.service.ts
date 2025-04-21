@@ -1,6 +1,7 @@
 import { MailerService } from "@nestjs-modules/mailer";
 import { Injectable, RequestTimeoutException } from "@nestjs/common";
-
+import { config } from "dotenv";
+config()
 
 
 @Injectable()
