@@ -9,9 +9,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api")
 
   app.use(cors({
-    origin: 'http://localhost:3000',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+    origin: '*',
   }));
   app.useGlobalPipes(new ValidationPipe({
     forbidNonWhitelisted: true,
