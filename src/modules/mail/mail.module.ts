@@ -23,7 +23,10 @@ import { MailService } from "./mail.service";
           dir: join(__dirname, "template"),
           adapter: new EjsAdapter({
             inlineCssEnabled: true
-          })
+          }),
+          options: {
+            strict: true,
+          },
         }
       })
     })
