@@ -10,7 +10,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   constructor(private config: ConfigService) {
     const redisOptions = {
       host: this.config.get<string>("REDIS_HOST"),
-      port: this.config.get<number>("REDIS_PORT"),
+      // port: this.config.get<number>("REDIS_PORT"),
+
     };
 
     this.client = new Redis(redisOptions);
@@ -68,14 +69,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async deleteByPattern(pattern: string): Promise<void> {
     const stream = this.client.scanStream({
       match: pattern,
-      count: 100, // عدد المفاتيح اللي بتتفحص في كل دفعة
+      count: 100,
     });
 
     return new Promise<void>((resolve, reject) => {
       stream.on("data", async (keys: string[]) => {
         if (keys.length > 0) {
           try {
-            // حذف المفاتيح باستخدام DEL
+
             await this.client.del(...keys);
           } catch (error) {
             console.error(`Error deleting keys for pattern ${pattern}:`, error);
@@ -85,12 +86,12 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       });
 
       stream.on("end", () => {
-        // الـ scan خلّص
+
         resolve();
       });
 
       stream.on("error", (error) => {
-        // معالجة أي أخطاء أثناء الـ scan
+
         console.error(`Error scanning keys for pattern ${pattern}:`, error);
         reject(error);
       });
