@@ -38,41 +38,54 @@ export class PostService {
     const user = await this.userService.getOne(userId);
 
     const newPost = this.postRepository.create({
-      title, content, resources, user
+      title,
+      content,
+      resources,
+      user,
     });
 
     const followers = await this.userRepository
       .createQueryBuilder("user")
-      .innerJoin("user_followers", "uf", "uf.follower_id = user.id AND uf.following_id = :userId", { userId: user.id })
+      .innerJoin(
+        "user_followers",
+        "uf",
+        "uf.follower_id = user.id AND uf.following_id = :userId",
+        { userId: user.id }
+      )
       .getMany();
 
     const savedPost = await this.postRepository.save(newPost);
 
-    for (const follower of followers) {
-      if (follower.id !== user.id) {
+    const notificationTasks = followers
+      .filter((follower) => follower.id !== user.id)
+      .map(async (follower) => {
         await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+
         const notification = this.notificationRepository.create({
           message: `${user.firstName} ${user.lastName} posted a new post`,
-          post: newPost,
+          post: savedPost,
           recipient: follower,
-          isRead: false
+          isRead: false,
         });
 
-        const savedNotifications = await this.notificationRepository.save(notification);
+        const savedNotification = await this.notificationRepository.save(notification);
 
-        await this.notificationService.cacheNotification(savedNotifications);
+        await this.notificationService.cacheNotification(savedNotification);
 
         await this.notificationGateway.sendNotification(follower.id, {
           message: notification.message,
-          post: newPost
+          post: savedPost,
         });
-      }
-    }
+      });
+
+    await Promise.all(notificationTasks);
 
     user.point += 6;
     await this.userRepository.save(user);
+
     return savedPost;
   }
+
 
   public async getAllPostsAndJobsFollowing(userId: number, page: number = 1, limit: number = 10) {
     page = Math.max(1, page);

@@ -95,37 +95,42 @@ export class JobService {
       requirements,
       extra_info,
       email_applay,
-      user
+      user,
     });
+
 
     const followers = await this.userRepository
       .createQueryBuilder("user")
       .innerJoin("user_followers", "uf", "uf.follower_id = user.id AND uf.following_id = :userId", { userId: user.id })
       .getMany();
 
+
     const savedJob = await this.jobRepository.save(newJob);
 
 
-    for (const follower of followers) {
-      if (follower.id !== user.id) {
+    const notificationTasks = followers
+      .filter((follower) => follower.id !== user.id)
+      .map(async (follower) => {
         await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
+
         const notification = this.notificationRepository.create({
-          message: `${user.firstName} ${user.lastName} posted a new post`,
-          job: newJob,
+          message: `${user.firstName} ${user.lastName} posted a new job`,
+          job: savedJob,
           recipient: follower,
-          isRead: false
+          isRead: false,
         });
 
-        const savedNotifications = await this.notificationRepository.save(notification);
+        const savedNotification = await this.notificationRepository.save(notification);
 
-        await this.notificationService.cacheNotification(savedNotifications);
+        await this.notificationService.cacheNotification(savedNotification);
 
         await this.notificationGateway.sendNotification(follower.id, {
           message: notification.message,
-          job: newJob
+          job: savedJob,
         });
-      }
-    }
+      });
+
+    await Promise.all(notificationTasks);
 
 
     user.point += 5;
@@ -133,6 +138,7 @@ export class JobService {
 
     return savedJob;
   }
+
   public async update(payload: JWTPayload, jobId: number, dto: UpdateJobDto) {
     const { title, short_intro, responsibilities, requirements, extra_info, email_applay } = dto;
     const user = await this.userService.getOne(payload.id);
@@ -156,11 +162,12 @@ export class JobService {
         .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
         .getMany()
 
-      for (const follower of followers) {
+      const cacheTasks = followers.map(async (follower) => {
         await this.redisService.delete(`notifications:${follower.id}`);
         await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
-      }
+      });
 
+      await Promise.all(cacheTasks);
       return this.getOne(job.id);
 
     };
@@ -179,10 +186,12 @@ export class JobService {
         .innerJoin("user_followers", "uf", "uf.following_id = :userId", { userId: user.id })
         .getMany()
 
-      for (const follower of followers) {
+      const cacheTasks = followers.map(async (follower) => {
         await this.redisService.delete(`notifications:${follower.id}`);
         await this.redisService.deleteByPattern(`user_feed_${follower.id}*`);
-      }
+      });
+
+      await Promise.all(cacheTasks);
 
       await this.jobRepository.remove(job);
       return { message: "Delete job success" };
