@@ -11,7 +11,6 @@ async function bootstrap() {
     origin: '*',  // يسمح لكل الدومينات
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],  // يحدد الطرق المسموح بها
     allowedHeaders: ['Content-Type', 'Authorization'],  // يحدد الهيدرات المسموح بها
-    credentials: true,  // لو كنت تستخدم ملفات تعريف الارتباط (Cookies) أو بيانات اعتماد
   });
 
   app.useGlobalPipes(
