@@ -8,8 +8,8 @@ async function bootstrap() {
   app.setGlobalPrefix("api")
 
   app.enableCors({
-    origin: 'http://localhost:3000',
-    credentials: true,
+    origin: true, // يسمح لأي origin
+    credentials: true, // مهم لو بتستخدم كوكيز أو Authorization headers
   });
 
   app.useGlobalPipes(new ValidationPipe({
