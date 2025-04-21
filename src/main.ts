@@ -8,10 +8,15 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api")
 
-  app.enableCors({
-    origin: '*',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    credentials: true,
+  app.use((req, res, next) => {
+    if (req.method === 'OPTIONS') {
+      res.header('Access-Control-Allow-Origin', '*');
+      res.header('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,PATCH');
+      res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+      res.sendStatus(204);
+    } else {
+      next();
+    }
   });
   app.useGlobalPipes(new ValidationPipe({
     forbidNonWhitelisted: true,
