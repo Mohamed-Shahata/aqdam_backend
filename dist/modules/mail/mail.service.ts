@@ -24,7 +24,7 @@ export class MailService {
         from: process.env.USERNAME_EMAIL,
         to: email,
         subject: "Verify Code",
-        template: "verify-code",
+        template: "verify-code.ejs",
         context: { email, code }
       })
     } catch (error) {
