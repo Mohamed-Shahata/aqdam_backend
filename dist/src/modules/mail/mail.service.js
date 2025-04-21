@@ -12,6 +12,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.MailService = void 0;
 const mailer_1 = require("@nestjs-modules/mailer");
 const common_1 = require("@nestjs/common");
+const dotenv_1 = require("dotenv");
+(0, dotenv_1.config)();
 let MailService = class MailService {
     mailerService;
     constructor(mailerService) {
