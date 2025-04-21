@@ -7,27 +7,18 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
-  // ✅ فعل CORS بالسماح للفرونت
+  // ✅ السماح لأي دومين
   app.enableCors({
-    origin: ['http://localhost:3000', 'https://aqdamfrontend.vercel.app'],
+    origin: '*', // 👈 مفتوح للعالم
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization'],
-    credentials: true,
   });
 
-  // ✅ Middleware يضيف CORS Headers (بدون *)
+  // ✅ Middleware يضيف headers
   app.use((req, res, next) => {
-    const allowedOrigins = ['http://localhost:3000', 'https://aqdamfrontend.vercel.app'];
-    const origin = req.headers.origin;
-
-    if (allowedOrigins.includes(origin)) {
-      res.setHeader('Access-Control-Allow-Origin', origin); // 👈 مش *
-    }
-
+    res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, PATCH, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept, Authorization');
-    res.setHeader('Access-Control-Allow-Credentials', 'true');
-
     next();
   });
 
