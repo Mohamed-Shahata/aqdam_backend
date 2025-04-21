@@ -10,8 +10,7 @@ async function bootstrap() {
     app.use(compression());
     app.enableCors({
         origin: '*',
-        methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT'],
-        credential: true
+        methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT']
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         forbidNonWhitelisted: true,

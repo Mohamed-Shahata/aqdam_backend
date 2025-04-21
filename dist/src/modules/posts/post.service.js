@@ -82,7 +82,7 @@ let PostService = class PostService {
         await Promise.all(notificationTasks);
         user.point += 6;
         await this.userRepository.save(user);
-        return savedPost;
+        return { message: "created post successfully" };
     }
     async getAllPostsAndJobsFollowing(userId, page = 1, limit = 10) {
         page = Math.max(1, page);

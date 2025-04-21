@@ -9,7 +9,9 @@ export declare class PostController {
     getAllFeeds(payload: JWTPayload, page: string, limit: string): Promise<any>;
     getAllPostsWithMe(userId: number): Promise<import("./post.entity").Post[]>;
     getOnePost(id: number): Promise<import("./post.entity").Post>;
-    createPost(payload: JWTPayload, dto: CreatePostDto): Promise<import("./post.entity").Post>;
+    createPost(payload: JWTPayload, dto: CreatePostDto): Promise<{
+        message: string;
+    }>;
     updatePost(payload: JWTPayload, id: number, dto: UpdatePostDto): Promise<import("./post.entity").Post>;
     deletePost(payload: JWTPayload, id: number): Promise<{
         message: string;

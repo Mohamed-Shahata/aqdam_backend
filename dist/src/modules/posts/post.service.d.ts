@@ -23,7 +23,9 @@ export declare class PostService {
     private readonly notificationService;
     private readonly redisService;
     constructor(postRepository: Repository<Post>, userRepository: Repository<User>, jobRepository: Repository<Job>, notificationRepository: Repository<Notification>, reactionRepository: Repository<Reaction>, userService: UserService, notificationGateway: NotificationsGateway, notificationService: NotificationService, redisService: RedisService);
-    create(userId: number, dto: CreatePostDto): Promise<Post>;
+    create(userId: number, dto: CreatePostDto): Promise<{
+        message: string;
+    }>;
     getAllPostsAndJobsFollowing(userId: number, page?: number, limit?: number): Promise<any>;
     getAllForUserId(currentUserId: number): Promise<Post[]>;
     getOne(postId: number): Promise<Post>;
