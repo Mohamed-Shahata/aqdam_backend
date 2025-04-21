@@ -1,19 +1,17 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import * as compression from "compression"
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix("api");
 
-  app.use(compression());
   app.enableCors({
     origin: '*',
-    methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT']
+    methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT'],
+    allowedHeaders: ['Content-Type', 'Authorization']
   });
-
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -23,7 +21,6 @@ async function bootstrap() {
     }),
   );
 
-
-  await app.listen(process.env.PORT || 5000);
+  await app.listen(5000);
 }
 bootstrap();
