@@ -8,8 +8,8 @@ async function bootstrap() {
     app.setGlobalPrefix("api");
     app.enableCors({
         origin: '*',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-        allowedHeaders: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         forbidNonWhitelisted: true,
