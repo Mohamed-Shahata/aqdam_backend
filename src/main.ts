@@ -8,9 +8,11 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api")
 
-  app.use(cors({
+  app.enableCors({
     origin: '*',
-  }));
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    credentials: true,
+  });
   app.useGlobalPipes(new ValidationPipe({
     forbidNonWhitelisted: true,
     whitelist: true,
