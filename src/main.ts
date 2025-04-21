@@ -8,8 +8,7 @@ async function bootstrap() {
   app.setGlobalPrefix("api")
 
   app.enableCors({
-    origin: true, // يسمح لأي origin
-    credentials: true, // مهم لو بتستخدم كوكيز أو Authorization headers
+    origin: true,
   });
 
   app.useGlobalPipes(new ValidationPipe({
