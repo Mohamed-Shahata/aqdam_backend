@@ -60,7 +60,10 @@ let UserService = class UserService {
         };
     }
     async getOne(id) {
-        const user = await this.userRepository.findOne({ where: { id } });
+        const user = await this.userRepository.findOne({
+            where: { id },
+            select: ['age', 'bio', 'firstName', 'lastName', 'id', 'point', 'profileImage']
+        });
         if (!user)
             throw new common_1.NotFoundException("User not found");
         return user;
@@ -82,7 +85,7 @@ let UserService = class UserService {
                     console.error(`Redis cache parse error for key ${cacheKey}:`, error);
                 }
             }
-            const user = await this.userRepository.findOne({ where: { id } });
+            const user = await this.getOne(id);
             if (!user) {
                 throw new common_1.NotFoundException("User not found");
             }
@@ -98,7 +101,7 @@ let UserService = class UserService {
         }
     }
     async getMe(id) {
-        const user = await this.userRepository.findOne({ where: { id } });
+        const user = await this.getOne(id);
         if (!user)
             throw new common_1.NotFoundException("User not found");
         return user;
@@ -109,7 +112,7 @@ let UserService = class UserService {
         const user = await this.getOne(payload.id);
         await this.userRepository.update(payload.id, { firstName, lastName, age, bio });
         await this.redisService.delete(`user_${user.id}`);
-        return await this.getOne(user.id);
+        return this.getOne(user.id);
     }
     ;
     async delete(payload) {
@@ -146,7 +149,7 @@ let UserService = class UserService {
         else {
             throw new common_1.BadRequestException("image not found");
         }
-        return await this.userRepository.save(user);
+        return this.userRepository.save(user);
     }
     ;
     async toggleFollow(id, targetUserId) {
@@ -156,7 +159,7 @@ let UserService = class UserService {
             where: { id },
             relations: ['following']
         });
-        const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
+        const targetUser = await this.userRepository.findOne({ where: { id: targetUserId }, select: ['id'] });
         if (!targetUser)
             throw new common_1.BadRequestException("Target user not found");
         const isFollowing = user?.following.some(user => user.id === targetUserId);
@@ -178,21 +181,24 @@ let UserService = class UserService {
     async getFollowing(id) {
         const user = await this.userRepository.findOne({
             where: { id },
-            relations: ['following']
+            relations: ['following'],
+            select: ['following']
         });
         return user?.following;
     }
     async getFollowingMe(id) {
         const user = await this.userRepository.findOne({
             where: { id },
-            relations: ['following']
+            relations: ['following'],
+            select: ['following']
         });
         return user?.following;
     }
     async getFollowers(id) {
         const user = await this.userRepository.findOne({
             where: { id },
-            relations: ['followers']
+            relations: ['followers'],
+            select: ['followers']
         });
         return user?.followers;
     }

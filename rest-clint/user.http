@@ -7,8 +7,8 @@ GET http://localhost:5000/api/users/people?page=1&limit=2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUxODg5MjYsImV4cCI6MTc0NTI3NTMyNn0.3ceivkU0C8XF0oPKVTHTOc8RoVqMC5y74dKVyQRm38o
 
 ### Get one user
-GET http://localhost:5000/api/users/26
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MjYsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NjI2NDMzLCJleHAiOjE3NDQ3MTI4MzN9.93MU1_kPVPNtH2DauGVZW6q4CQ3Oilj0zqxjo36Rszk
+GET http://localhost:5000/api/users/1
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUyNzAyNzksImV4cCI6MTc0NTM1NjY3OX0.rYhpidTGiEq-DG0BaDTUB3RDZcBQM4QPOef3pbmqt-E
 ### Get me
 POST http://localhost:5000/api/users/me
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsInJvbGUiOiJ1c2VyIiwiaWF0IjoxNzQ0NzU4Mjk0LCJleHAiOjE3NDQ4NDQ2OTR9.I1T56gbmtDnQgIuXki74beJEKo4uZzx3RmHt1doMoyQ

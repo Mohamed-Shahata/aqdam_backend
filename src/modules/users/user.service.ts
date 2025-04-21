@@ -1,7 +1,7 @@
 import { BadRequestException, ForbiddenException, Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { User } from "./user.entity";
-import { ILike, Like, Repository } from "typeorm";
+import { Repository } from "typeorm";
 import { UpdateUserDto } from "./dto/user-update.dto";
 import { CloudinaryService } from "../uploads/cloudinary.service";
 import { JWTPayload } from "src/utils/type";
@@ -74,7 +74,10 @@ export class UserService {
    * @throws {NotFoundException} If the user is not found.
    */
   public async getOne(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.userRepository.findOne({
+      where: { id },
+      select: ['age', 'bio', 'firstName', 'lastName', 'id', 'point', 'profileImage']
+    });
     if (!user)
       throw new NotFoundException("User not found");
     return user;
@@ -98,7 +101,7 @@ export class UserService {
         }
       }
 
-      const user = await this.userRepository.findOne({ where: { id } });
+      const user = await this.getOne(id)
       if (!user) {
         throw new NotFoundException("User not found");
       }
@@ -114,7 +117,7 @@ export class UserService {
     }
   }
   public async getMe(id: number): Promise<User> {
-    const user = await this.userRepository.findOne({ where: { id } });
+    const user = await this.getOne(id)
     if (!user)
       throw new NotFoundException("User not found");
     return user;
@@ -134,7 +137,7 @@ export class UserService {
 
     await this.userRepository.update(payload.id, { firstName, lastName, age, bio });
     await this.redisService.delete(`user_${user.id}`)
-    return await this.getOne(user.id);
+    return this.getOne(user.id);
   };
 
   /**
@@ -197,7 +200,7 @@ export class UserService {
     } else {
       throw new BadRequestException("image not found");
     }
-    return await this.userRepository.save(user);
+    return this.userRepository.save(user); // Notes!!
   };
 
   /**
@@ -219,7 +222,7 @@ export class UserService {
     });
 
 
-    const targetUser = await this.userRepository.findOneBy({ id: targetUserId });
+    const targetUser = await this.userRepository.findOne({ where: { id: targetUserId }, select: ['id'] });
     if (!targetUser) throw new BadRequestException("Target user not found");
 
     const isFollowing = user?.following.some(user => user.id === targetUserId);
@@ -248,7 +251,8 @@ export class UserService {
   public async getFollowing(id: number): Promise<User[] | undefined> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['following']
+      relations: ['following'],
+      select: ['following']
     });
     return user?.following
   }
@@ -256,7 +260,8 @@ export class UserService {
   public async getFollowingMe(id: number): Promise<User[] | undefined> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['following']
+      relations: ['following'],
+      select: ['following']
     });
     return user?.following
   }
@@ -270,7 +275,8 @@ export class UserService {
   public async getFollowers(id: number): Promise<User[] | undefined> {
     const user = await this.userRepository.findOne({
       where: { id },
-      relations: ['followers']
+      relations: ['followers'],
+      select: ['followers']
     });
     return user?.followers
   }

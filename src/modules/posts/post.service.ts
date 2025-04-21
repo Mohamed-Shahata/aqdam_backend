@@ -185,10 +185,26 @@ export class PostService {
 
   public async getAllForUserId(currentUserId: number) {
     const user = await this.userService.getOne(currentUserId);
-    return this.postRepository.find({
-      where: { user },
-      order: { createdAt: "DESC" }
-    })
+    user
+    return this.postRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('post.userId = :userId', { userId: user.id })
+      .orderBy('post.createdAt', 'DESC')
+      .select([
+        'post.id',
+        'post.title',
+        'post.resources',
+        'post.type',
+        'post.content',
+        'post.createdAt',
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+        'user.lastName',
+        'user.profileImage'
+      ])
+      .getMany();
   }
 
   public async getOne(postId: number) {

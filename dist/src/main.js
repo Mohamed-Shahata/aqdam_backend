@@ -8,15 +8,15 @@ async function bootstrap() {
     app.setGlobalPrefix("api");
     app.enableCors({
         origin: '*',
-        methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT'],
-        allowedHeaders: ['Content-Type', 'Authorization']
+        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         forbidNonWhitelisted: true,
         whitelist: true,
         transform: true,
     }));
-    await app.listen(5000);
+    await app.listen(process.env.PORT || 5000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map
