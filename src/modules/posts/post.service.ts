@@ -83,7 +83,7 @@ export class PostService {
     user.point += 6;
     await this.userRepository.save(user);
 
-    return savedPost;
+    return { message: "created post successfully" };
   }
 
 

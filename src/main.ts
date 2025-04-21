@@ -8,13 +8,13 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
-  app.use(compression());
+
   app.enableCors({
     origin: '*',
-    methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT'],
-    credential: true
+    methods: ['GET', 'PATCH', 'POST', 'DELETE', 'PUT']
   });
 
+  app.use(compression());
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
