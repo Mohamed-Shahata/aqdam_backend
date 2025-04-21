@@ -9,7 +9,10 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
 
   app.enableCors({
-    origin: '*'
+    origin: ['http://localhost:3000', 'https://aqdamfrontend.vercel.app'], // ضيف رابط الفرونت لو عندك
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true,
   });
 
   app.useGlobalPipes(
