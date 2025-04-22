@@ -17,9 +17,6 @@ import { MulterModule } from '@nestjs/platform-express';
     PostModule,
     JobModule,
     NotificationModule,
-    MulterModule.register({
-      dest: "./images"
-    }),
     TypeOrmModule.forRoot(dataSourceOptions),
     ConfigModule.forRoot({
       isGlobal: true,
