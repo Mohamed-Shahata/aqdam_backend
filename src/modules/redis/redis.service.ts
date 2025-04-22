@@ -18,8 +18,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       throw new Error('REDIS_URL is not defined in .env file');
     }
 
-    this.client = new Redis(redisUrl);
-    this.subscriber = new Redis(redisUrl);
+    this.client = new Redis('redis://default:YYHcDmWrUcXosqEoTILkRwzpUHaFYZXN@ballast.proxy.rlwy.net:35940');
+    this.subscriber = new Redis('redis://default:YYHcDmWrUcXosqEoTILkRwzpUHaFYZXN@ballast.proxy.rlwy.net:35940');
   }
 
   async onModuleInit() {
