@@ -284,16 +284,17 @@ export class JobService {
   }
 
   public async getFavoritesJobProfile(currentUserId: number) {
-    const user = await this.userRepository.findOne({
-      where: { id: currentUserId },
-      relations: ["favorites"],
-      select: ['id']
-    });
+    const user = await this.userRepository.findOne({ where: { id: currentUserId } });
+    if (!user) throw new NotFoundException("User not found");
 
-    if (!user)
-      throw new NotFoundException("User not found")
+    const favorites = await this.userRepository
+      .createQueryBuilder('user')
+      .leftJoin('user.favorites', 'favorite')
+      .where('user.id = :id', { id: currentUserId })
+      .select(['favorite.id'])
+      .getRawMany();
 
-    return user.favorites;
+    return favorites.map(fav => fav.favorite_id);
   }
 
 };
