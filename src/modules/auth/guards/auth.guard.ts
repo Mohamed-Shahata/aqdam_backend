@@ -32,9 +32,9 @@ export class AuthGuard implements CanActivate {
     const request: Request = context.switchToHttp().getRequest();
     const [type, token] = request.headers.authorization?.split(" ") ?? [];
 
-    if (token && type === this.config.get<string>("TOKEN_PREFIX")) {
+    if (token) {
+      console.log(type, " ", token)
       try {
-        console.log(type, " ", token)
         const payload: JWTPayload = await this.jwtService.verifyAsync(token, {
           secret: this.config.get<string>("JWT_SECRET")
         });
