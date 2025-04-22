@@ -10,7 +10,8 @@ async function bootstrap() {
 
   app.use(compression())
   app.enableCors({
-    origin: '*'
+    origin: '*',
+    credential: true
   });
 
   app.useGlobalPipes(
