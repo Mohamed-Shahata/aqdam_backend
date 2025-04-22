@@ -8,13 +8,12 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
-
   app.use(compression())
   app.enableCors({
-    origin: 'https://aqdambackend-production.up.railway.app',
-    credentials: true,
-    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    allowedHeaders: 'Content-Type, Authorization, multipart/form-data',
+    credential: true
   });
 
   app.useGlobalPipes(
