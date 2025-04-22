@@ -13,7 +13,7 @@ async function bootstrap() {
     origin: '*',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     allowedHeaders: 'Content-Type, Authorization',
-    Credential: true
+    credential: true
   });
 
   app.useGlobalPipes(
