@@ -77,10 +77,10 @@ export class JobService {
     const user = await this.userService.getOne(id);
 
     const [jobs, total] = await this.jobRepository
-      .createQueryBuilder('post')
-      .leftJoinAndSelect('post.user', 'user')
-      .where('post.userId = :userId', { userId: user.id })
-      .orderBy('post.createdAt', 'DESC')
+      .createQueryBuilder('job')
+      .leftJoinAndSelect('job.user', 'user')
+      .where('job.userId = :userId', { userId: user.id })
+      .orderBy('job.createdAt', 'DESC')
       .select([
         'job.id',
         'job.title',
