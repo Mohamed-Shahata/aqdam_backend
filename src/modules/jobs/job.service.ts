@@ -283,5 +283,17 @@ export class JobService {
     return user.favorites;
   }
 
+  public async getFavoritesJobProfile(currentUserId: number) {
+    const user = await this.userRepository.findOne({
+      where: { id: currentUserId },
+      relations: ["favorites"],
+      select: ['id']
+    });
+
+    if (!user)
+      throw new NotFoundException("User not found")
+
+    return user.favorites;
+  }
 
 };

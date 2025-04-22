@@ -82,4 +82,10 @@ export class JobController {
   public getUserFavorite(@CurrentUser() payload: JWTPayload) {
     return this.jobService.getFavorites(payload.id);
   }
+
+  @Post("favorites/profile")
+  @UseGuards(AuthGuard)
+  public getUserFavoriteJobProfile(@CurrentUser() payload: JWTPayload) {
+    return this.jobService.getFavoritesJobProfile(payload.id);
+  }
 };
