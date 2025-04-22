@@ -10,18 +10,17 @@ async function bootstrap() {
   app.setGlobalPrefix("api");
 
   app.use(compression())
-  // app.enableCors({
-  //   origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
-  //   credentials: true,
-  //   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
-  //   allowedHeaders: ['Content-Type', 'Authorization'],
-  // });
+  app.enableCors({
+    origin: '*',
+    credentials: true,
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH']
+  });
 
-  app.use(cors({
-    origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
-    methods: "GET, POST, PUT, PATCH, DELETE",
-    credentials: true
-  }));
+  // app.use(cors({
+  //   origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
+  //   methods: "GET, POST, PUT, PATCH, DELETE",
+  //   credentials: true
+  // }));
 
 
   app.use((req, res, next) => {
