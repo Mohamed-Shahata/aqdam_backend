@@ -39,8 +39,14 @@ export class PostController {
   // GET: ~/api/posts
   @Get("user/:userId")
   @UseGuards(AuthGuard)
-  public getAllPostsWithMe(@Param("userId") userId: number) {
-    return this.postService.getAllForUserId(userId);
+  public getAllPostsWithMe(
+    @Param("userId") userId: number,
+    @Query('page') page: string,
+    @Query('limit') limit: string
+  ) {
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    return this.postService.getAllForUserId(userId, pageNumber, limitNumber);
   }
 
   // GET: ~/api/posts/:id

@@ -73,9 +73,39 @@ export class JobService {
   //   return jobs;
   // }
 
-  public async getAllForUserId(id: number) {
+  public async getAllForUserId(id: number, page: number = 1, limit: number = 5) {
     const user = await this.userService.getOne(id);
-    return await this.jobRepository.find({ where: { user }, order: { createdAt: "DESC" } });
+
+    const [jobs, total] = await this.jobRepository
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.user', 'user')
+      .where('post.userId = :userId', { userId: user.id })
+      .orderBy('post.createdAt', 'DESC')
+      .select([
+        'job.id',
+        'job.title',
+        'job.extra_info',
+        'job.email_applay',
+        'job.type',
+        'job.requirements',
+        'job.createdAt',
+        'job.responsibilities',
+        'job.short_intro',
+        'user.id',
+        'user.firstName',
+        'user.lastName',
+        'user.profileImage'
+      ])
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: jobs,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total
+    };
   };
 
   public async getOne(id: number) {

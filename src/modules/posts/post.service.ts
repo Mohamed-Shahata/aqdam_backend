@@ -183,10 +183,10 @@ export class PostService {
   //   return posts;
   // };
 
-  public async getAllForUserId(currentUserId: number) {
+  public async getAllForUserId(currentUserId: number, page: number = 1, limit: number = 5) {
     const user = await this.userService.getOne(currentUserId);
-    user
-    return this.postRepository
+
+    const [posts, total] = await this.postRepository
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.user', 'user')
       .where('post.userId = :userId', { userId: user.id })
@@ -201,10 +201,18 @@ export class PostService {
         'user.id',
         'user.firstName',
         'user.lastName',
-        'user.lastName',
         'user.profileImage'
       ])
-      .getMany();
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    return {
+      data: posts,
+      currentPage: page,
+      totalPages: Math.ceil(total / limit),
+      totalItems: total
+    };
   }
 
   public async getOne(postId: number) {
