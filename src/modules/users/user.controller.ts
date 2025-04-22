@@ -73,7 +73,6 @@ export class UserController {
   // POST: ~/api/users/images/upload-image
   @Post("images/upload-image")
   @UseInterceptors(FileInterceptor("user-image"))
-  @Roles(UserRole.ADMIN, UserRole.SUP_USER, UserRole.USER)
   @UseGuards(AuthGuard)
   public async uploadImageUser(
     @UploadedFile() file: Express.Multer.File,
