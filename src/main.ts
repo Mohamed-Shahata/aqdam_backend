@@ -8,6 +8,7 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
+
   app.use(compression())
   app.enableCors({
     origin: 'https://aqdambackend-production.up.railway.app',
