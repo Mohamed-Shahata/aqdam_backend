@@ -10,21 +10,12 @@ async function bootstrap() {
 
   app.use(compression())
   app.enableCors({
-    origin: (origin, callback) => {
-      const allowedOrigins = [
-        'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
-        // 'http://localhost:3000',
-      ];
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, origin);
-      } else {
-        callback(new Error('Not allowed by CORS'));
-      }
-    },
+    origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app/',
     credentials: true,
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
   });
+
   app.useGlobalPipes(
     new ValidationPipe({
       forbidNonWhitelisted: true,
