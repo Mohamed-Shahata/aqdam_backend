@@ -28,12 +28,13 @@ let AuthGuard = class AuthGuard {
         this.reflector = reflector;
     }
     async canActivate(context) {
+        console.log("test");
         const roles = this.reflector.getAllAndOverride("roles", [context.getHandler(), context.getClass()]);
         const request = context.switchToHttp().getRequest();
         const [type, token] = request.headers.authorization?.split(" ") ?? [];
         if (token && type === this.config.get("TOKEN_PREFIX")) {
             try {
-                const payload = await this.jwtService.verifyAsync(token, {
+                const payload = await this.jwtService.verify(token, {
                     secret: this.config.get("JWT_SECRET")
                 });
                 const user = await this.userService.getOne(payload.id);

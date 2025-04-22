@@ -18,8 +18,6 @@ const user_service_1 = require("./user.service");
 const user_update_dto_1 = require("./dto/user-update.dto");
 const platform_express_1 = require("@nestjs/platform-express");
 const auth_guard_1 = require("../auth/guards/auth.guard");
-const user_role_decorator_1 = require("../auth/decorators/user-role.decorator");
-const enum_roles_1 = require("../../utils/enum.roles");
 const current_user_decorator_1 = require("../auth/decorators/current-user.decorator");
 let UserController = class UserController {
     userService;
@@ -57,11 +55,13 @@ let UserController = class UserController {
     }
     ;
     async uploadImageUser(file, payload) {
+        console.log("test");
         if (!file)
             throw new common_1.BadRequestException("no image provided");
         return this.userService.uploadImage(payload, file);
     }
     deleteImage(payload) {
+        console.log("delete");
         return this.userService.deleteImage(payload);
     }
     ;
@@ -141,7 +141,6 @@ __decorate([
 __decorate([
     (0, common_1.Post)("images/upload-image"),
     (0, common_1.UseInterceptors)((0, platform_express_1.FileInterceptor)("user-image")),
-    (0, user_role_decorator_1.Roles)(enum_roles_1.UserRole.ADMIN, enum_roles_1.UserRole.SUP_USER, enum_roles_1.UserRole.USER),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.UploadedFile)()),
     __param(1, (0, current_user_decorator_1.CurrentUser)()),
@@ -151,7 +150,6 @@ __decorate([
 ], UserController.prototype, "uploadImageUser", null);
 __decorate([
     (0, common_1.Delete)("images/delete-image"),
-    (0, user_role_decorator_1.Roles)(enum_roles_1.UserRole.ADMIN, enum_roles_1.UserRole.SUP_USER, enum_roles_1.UserRole.USER),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, current_user_decorator_1.CurrentUser)()),
     __metadata("design:type", Function),

@@ -27,7 +27,12 @@ export declare class PostService {
         message: string;
     }>;
     getAllPostsAndJobsFollowing(userId: number, page?: number, limit?: number): Promise<any>;
-    getAllForUserId(currentUserId: number): Promise<Post[]>;
+    getAllForUserId(currentUserId: number, page?: number, limit?: number): Promise<{
+        data: Post[];
+        currentPage: number;
+        totalPages: number;
+        totalItems: number;
+    }>;
     getOne(postId: number): Promise<Post>;
     update(payload: JWTPayload, postId: number, dto: UpdatePostDto): Promise<Post>;
     delete(payload: JWTPayload, postId: number): Promise<{

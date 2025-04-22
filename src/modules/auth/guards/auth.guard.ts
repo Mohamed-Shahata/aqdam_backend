@@ -23,6 +23,7 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext) {
 
+    console.log("test")
 
     const roles: UserRole = this.reflector.getAllAndOverride(
       "roles",

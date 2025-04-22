@@ -8,12 +8,12 @@ async function bootstrap() {
 
   app.setGlobalPrefix("api");
 
-  app.use(compression())
+  // app.use(compression())
   app.enableCors({
-    origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization, multipart/form-data',
-    credential: true
+    origin: 'http://localhost:3000',
+    credentials: true,
+    methods: ['GET', 'HEAD', 'PUT', 'PATCH', 'POST', 'DELETE'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
   });
 
   app.useGlobalPipes(
@@ -24,6 +24,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT || 5000);
+  await app.listen(5000);
 }
 bootstrap();

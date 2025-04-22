@@ -25,7 +25,7 @@ exports.MailModule = MailModule = __decorate([
                     transport: {
                         host: config.get("SMTP_HOST"),
                         port: config.get("SMTP_PORT"),
-                        secure: false,
+                        secure: true,
                         auth: {
                             user: config.get("SMTP_USERNAME"),
                             pass: config.get("SMTP_PASSWORD")

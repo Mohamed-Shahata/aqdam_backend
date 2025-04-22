@@ -78,17 +78,18 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() payload: JWTPayload
   ) {
+    console.log("test")
     if (!file) throw new BadRequestException("no image provided")
     return this.userService.uploadImage(payload, file);
   }
 
   // DELETE: ~/api/users/images/delete-image
   @Delete("images/delete-image")
-  @Roles(UserRole.ADMIN, UserRole.SUP_USER, UserRole.USER)
   @UseGuards(AuthGuard)
   public deleteImage(
     @CurrentUser() payload: JWTPayload
   ) {
+    console.log("delete")
     return this.userService.deleteImage(payload);
   };
 

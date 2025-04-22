@@ -7,6 +7,7 @@ import { PostModule } from './modules/posts/post.module';
 import { JobModule } from './modules/jobs/job.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { dataSourceOptions } from 'db/data-source';
+import { MulterModule } from '@nestjs/platform-express';
 
 
 @Module({
@@ -16,6 +17,9 @@ import { dataSourceOptions } from 'db/data-source';
     PostModule,
     JobModule,
     NotificationModule,
+    MulterModule.register({
+      dest: "./images"
+    }),
     TypeOrmModule.forRoot(dataSourceOptions),
     ConfigModule.forRoot({
       isGlobal: true,

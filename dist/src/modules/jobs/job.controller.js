@@ -28,8 +28,10 @@ let JobController = class JobController {
     getAllJobs() {
         return this.jobService.getAll();
     }
-    getAllJobsWithMe(userId) {
-        return this.jobService.getAllForUserId(userId);
+    getAllJobsWithMe(userId, page, limit) {
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+        return this.jobService.getAllForUserId(userId, pageNumber, limitNumber);
     }
     getOneJob(id) {
         return this.jobService.getOne(id);
@@ -52,6 +54,9 @@ let JobController = class JobController {
     getUserFavorite(payload) {
         return this.jobService.getFavorites(payload.id);
     }
+    getUserFavoriteJobProfile(payload) {
+        return this.jobService.getFavoritesJobProfile(payload.id);
+    }
 };
 exports.JobController = JobController;
 __decorate([
@@ -65,8 +70,10 @@ __decorate([
     (0, common_1.Get)("user/:userId"),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Param)("userId")),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "getAllJobsWithMe", null);
 __decorate([
@@ -131,6 +138,14 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], JobController.prototype, "getUserFavorite", null);
+__decorate([
+    (0, common_1.Post)("favorites/profile"),
+    (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
+    __param(0, (0, current_user_decorator_1.CurrentUser)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", void 0)
+], JobController.prototype, "getUserFavoriteJobProfile", null);
 exports.JobController = JobController = __decorate([
     (0, common_1.Controller)("jobs"),
     __metadata("design:paramtypes", [job_service_1.JobService])

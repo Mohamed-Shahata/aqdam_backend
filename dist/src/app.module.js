@@ -16,6 +16,7 @@ const post_module_1 = require("./modules/posts/post.module");
 const job_module_1 = require("./modules/jobs/job.module");
 const notification_module_1 = require("./modules/notifications/notification.module");
 const data_source_1 = require("../db/data-source");
+const platform_express_1 = require("@nestjs/platform-express");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -27,6 +28,9 @@ exports.AppModule = AppModule = __decorate([
             post_module_1.PostModule,
             job_module_1.JobModule,
             notification_module_1.NotificationModule,
+            platform_express_1.MulterModule.register({
+                dest: "./images"
+            }),
             typeorm_1.TypeOrmModule.forRoot(data_source_1.dataSourceOptions),
             config_1.ConfigModule.forRoot({
                 isGlobal: true,

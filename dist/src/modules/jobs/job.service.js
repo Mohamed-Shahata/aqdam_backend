@@ -46,9 +46,37 @@ let JobService = class JobService {
         return this.jobRepository.find({ order: { createdAt: "DESC" } });
     }
     ;
-    async getAllForUserId(id) {
+    async getAllForUserId(id, page = 1, limit = 5) {
         const user = await this.userService.getOne(id);
-        return await this.jobRepository.find({ where: { user }, order: { createdAt: "DESC" } });
+        const [jobs, total] = await this.jobRepository
+            .createQueryBuilder('job')
+            .leftJoinAndSelect('job.user', 'user')
+            .where('job.userId = :userId', { userId: user.id })
+            .orderBy('job.createdAt', 'DESC')
+            .select([
+            'job.id',
+            'job.title',
+            'job.extra_info',
+            'job.email_applay',
+            'job.type',
+            'job.requirements',
+            'job.createdAt',
+            'job.responsibilities',
+            'job.short_intro',
+            'user.id',
+            'user.firstName',
+            'user.lastName',
+            'user.profileImage'
+        ])
+            .skip((page - 1) * limit)
+            .take(limit)
+            .getManyAndCount();
+        return {
+            data: jobs,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total
+        };
     }
     ;
     async getOne(id) {
@@ -179,6 +207,18 @@ let JobService = class JobService {
         if (!user)
             throw new common_1.NotFoundException("User not found");
         return user.favorites;
+    }
+    async getFavoritesJobProfile(currentUserId) {
+        const user = await this.userRepository.findOne({ where: { id: currentUserId } });
+        if (!user)
+            throw new common_1.NotFoundException("User not found");
+        const favorites = await this.userRepository
+            .createQueryBuilder('user')
+            .leftJoin('user.favorites', 'favorite')
+            .where('user.id = :id', { id: currentUserId })
+            .select(['favorite.id'])
+            .getRawMany();
+        return favorites;
     }
 };
 exports.JobService = JobService;

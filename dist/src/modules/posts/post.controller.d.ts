@@ -7,7 +7,12 @@ export declare class PostController {
     private readonly postService;
     constructor(postService: PostService);
     getAllFeeds(payload: JWTPayload, page: string, limit: string): Promise<any>;
-    getAllPostsWithMe(userId: number): Promise<import("./post.entity").Post[]>;
+    getAllPostsWithMe(userId: number, page: string, limit: string): Promise<{
+        data: import("./post.entity").Post[];
+        currentPage: number;
+        totalPages: number;
+        totalItems: number;
+    }>;
     getOnePost(id: number): Promise<import("./post.entity").Post>;
     createPost(payload: JWTPayload, dto: CreatePostDto): Promise<{
         message: string;

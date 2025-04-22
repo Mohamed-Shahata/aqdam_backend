@@ -19,7 +19,12 @@ export declare class JobService {
     private readonly redisService;
     constructor(jobRepository: Repository<Job>, userRepository: Repository<User>, notificationRepository: Repository<Notification>, userService: UserService, notificationGateway: NotificationsGateway, notificationService: NotificationService, redisService: RedisService);
     getAll(): Promise<Job[]>;
-    getAllForUserId(id: number): Promise<Job[]>;
+    getAllForUserId(id: number, page?: number, limit?: number): Promise<{
+        data: Job[];
+        currentPage: number;
+        totalPages: number;
+        totalItems: number;
+    }>;
     getOne(id: number): Promise<Job>;
     create(userId: number, dto: CreateJobDto): Promise<Job>;
     update(payload: JWTPayload, jobId: number, dto: UpdateJobDto): Promise<Job>;
@@ -29,4 +34,5 @@ export declare class JobService {
     addToFavorites(currentUserId: number, jobId: number): Promise<User>;
     removeFromFavorite(currentUserId: number, jobId: number): Promise<User>;
     getFavorites(currentUserId: number): Promise<Job[]>;
+    getFavoritesJobProfile(currentUserId: number): Promise<any[]>;
 }

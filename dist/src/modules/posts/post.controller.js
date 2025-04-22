@@ -31,8 +31,10 @@ let PostController = class PostController {
         const limitNumber = parseInt(limit);
         return this.postService.getAllPostsAndJobsFollowing(payload.id, pageNumber, limitNumber);
     }
-    getAllPostsWithMe(userId) {
-        return this.postService.getAllForUserId(userId);
+    getAllPostsWithMe(userId, page, limit) {
+        const pageNumber = parseInt(page);
+        const limitNumber = parseInt(limit);
+        return this.postService.getAllForUserId(userId, pageNumber, limitNumber);
     }
     getOnePost(id) {
         return this.postService.getOne(id);
@@ -74,8 +76,10 @@ __decorate([
     (0, common_1.Get)("user/:userId"),
     (0, common_1.UseGuards)(auth_guard_1.AuthGuard),
     __param(0, (0, common_1.Param)("userId")),
+    __param(1, (0, common_1.Query)('page')),
+    __param(2, (0, common_1.Query)('limit')),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [Number]),
+    __metadata("design:paramtypes", [Number, String, String]),
     __metadata("design:returntype", void 0)
 ], PostController.prototype, "getAllPostsWithMe", null);
 __decorate([

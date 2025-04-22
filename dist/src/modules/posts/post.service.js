@@ -137,10 +137,9 @@ let PostService = class PostService {
         await this.redisService.set(cacheKey, JSON.stringify(response), 60);
         return response;
     }
-    async getAllForUserId(currentUserId) {
+    async getAllForUserId(currentUserId, page = 1, limit = 5) {
         const user = await this.userService.getOne(currentUserId);
-        user;
-        return this.postRepository
+        const [posts, total] = await this.postRepository
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.user', 'user')
             .where('post.userId = :userId', { userId: user.id })
@@ -155,10 +154,17 @@ let PostService = class PostService {
             'user.id',
             'user.firstName',
             'user.lastName',
-            'user.lastName',
             'user.profileImage'
         ])
-            .getMany();
+            .skip((page - 1) * limit)
+            .take(limit)
+            .getManyAndCount();
+        return {
+            data: posts,
+            currentPage: page,
+            totalPages: Math.ceil(total / limit),
+            totalItems: total
+        };
     }
     async getOne(postId) {
         const post = await this.postRepository.findOne({ where: { id: postId } });
