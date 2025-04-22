@@ -12,7 +12,7 @@ async function bootstrap() {
   app.enableCors({
     origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app',
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    allowedHeaders: 'Content-Type, Authorization',
+    allowedHeaders: 'Content-Type, Authorization, multipart/form-data',
     credential: true
   });
 
