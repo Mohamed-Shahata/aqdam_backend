@@ -294,7 +294,7 @@ export class JobService {
       .select(['favorite.id'])
       .getRawMany();
 
-    return favorites.map(fav => fav.favorite_id);
+    return favorites;
   }
 
 };

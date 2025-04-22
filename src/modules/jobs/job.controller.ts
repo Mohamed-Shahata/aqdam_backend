@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Query, UseGuards } from "@nestjs/common";
 import { AuthGuard } from "../auth/guards/auth.guard";
 import { JobService } from "./job.service";
 import { CurrentUser } from "../auth/decorators/current-user.decorator";
@@ -29,8 +29,14 @@ export class JobController {
   // GET: ~/api/jobs
   @Get("user/:userId")
   @UseGuards(AuthGuard)
-  public getAllJobsWithMe(@Param("userId") userId: number) {
-    return this.jobService.getAllForUserId(userId);
+  public getAllJobsWithMe(
+    @Param("userId") userId: number,
+    @Query('page') page: string,
+    @Query('limit') limit: string
+  ) {
+    const pageNumber = parseInt(page);
+    const limitNumber = parseInt(limit);
+    return this.jobService.getAllForUserId(userId, pageNumber, limitNumber);
   }
 
   // GET: ~/api/jobs/:id
