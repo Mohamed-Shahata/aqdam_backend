@@ -5,7 +5,6 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsInJvbGUiO
 ### Get all users
 GET http://localhost:5000/api/users/people?page=1&limit=2
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUxODg5MjYsImV4cCI6MTc0NTI3NTMyNn0.3ceivkU0C8XF0oPKVTHTOc8RoVqMC5y74dKVyQRm38o
-
 ### Get one user
 GET http://localhost:5000/api/users/1
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUyNzAyNzksImV4cCI6MTc0NTM1NjY3OX0.rYhpidTGiEq-DG0BaDTUB3RDZcBQM4QPOef3pbmqt-E
