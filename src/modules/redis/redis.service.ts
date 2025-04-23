@@ -9,17 +9,13 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private config: ConfigService) {
     const redisUrl = this.config.get<string>('REDIS_URL');
-    // const object = {
-    //   host: this.config.get<string>('REDIS_HOST'),
-    //   port: this.config.get<number>('REDIS_PORT')
-    // }
 
     if (!redisUrl) {
       throw new Error('REDIS_URL is not defined in .env file');
     }
 
-    this.client = new Redis('redis://default:YYHcDmWrUcXosqEoTILkRwzpUHaFYZXN@ballast.proxy.rlwy.net:35940');
-    this.subscriber = new Redis('redis://default:YYHcDmWrUcXosqEoTILkRwzpUHaFYZXN@ballast.proxy.rlwy.net:35940');
+    this.client = new Redis(redisUrl);
+    this.subscriber = new Redis(redisUrl);
   }
 
   async onModuleInit() {
