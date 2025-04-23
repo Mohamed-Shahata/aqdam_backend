@@ -10,8 +10,16 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   constructor(private config: ConfigService) {
     const redisUrl = this.config.get<string>('REDIS_URL');
 
+    // لوغ للتأكد من قيمة REDIS_URL
+    console.log('Attempting to load REDIS_URL:', redisUrl || 'undefined');
+
     if (!redisUrl) {
-      throw new Error('REDIS_URL غير معرف في إعدادات البيئة');
+      throw new Error('REDIS_URL غير معرف في إعدادات البيئة. تأكدي من إضافته في Railway Environment Variables.');
+    }
+
+    // منع الاتصال بـ localhost
+    if (redisUrl.includes('127.0.0.1') || redisUrl.includes('localhost')) {
+      throw new Error('الاتصال بـ localhost مرفوض. استخدمي REDIS_URL من Railway.');
     }
 
     this.client = new Redis(redisUrl, {
