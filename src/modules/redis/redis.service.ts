@@ -8,24 +8,79 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   private subscriber: Redis;
 
   constructor(private config: ConfigService) {
+console.log(process.env.REDIS_URL);
     const redisUrl = this.config.get<string>('REDIS_URL');
+<<<<<<< HEAD
+=======
+
+    // لوغ للتأكد من قيمة REDIS_URL
+    console.log('Attempting to load REDIS_URL:', redisUrl || 'undefined');
+>>>>>>> ea43c59f862015ca0d03fd541a8ee96801dc6604
 
     if (!redisUrl) {
-      throw new Error('REDIS_URL is not defined in .env file');
+      throw new Error('REDIS_URL غير معرف في إعدادات البيئة. تأكدي من إضافته في Railway Environment Variables.');
     }
 
+<<<<<<< HEAD
     this.client = new Redis(redisUrl);
     this.subscriber = new Redis(redisUrl);
+=======
+    // منع الاتصال بـ localhost
+    if (redisUrl.includes('127.0.0.1') || redisUrl.includes('localhost')) {
+      throw new Error('الاتصال بـ localhost مرفوض. استخدمي REDIS_URL من Railway.');
+    }
+
+    this.client = new Redis(redisUrl, {
+      retryStrategy: (times) => Math.min(times * 50, 2000),
+      maxRetriesPerRequest: 5,
+      enableOfflineQueue: true,
+      connectTimeout: 10000,
+      family: 0,
+    });
+
+    this.subscriber = new Redis(redisUrl, {
+      retryStrategy: (times) => Math.min(times * 50, 2000),
+      maxRetriesPerRequest: 5,
+      enableOfflineQueue: true,
+      connectTimeout: 10000,
+      family: 0,
+    });
+
+    this.client.on('error', (error) => {
+      console.error('خطأ في الاتصال بـ Redis (client):', error.message, 'URL:', redisUrl);
+    });
+
+    this.subscriber.on('error', (error) => {
+      console.error('خطأ في الاتصال بـ Redis (subscriber):', error.message, 'URL:', redisUrl);
+    });
+
+    this.client.on('connect', () => {
+      console.log('تم الاتصال بـ Redis (client) بنجاح:', redisUrl);
+    });
+
+    this.subscriber.on('connect', () => {
+      console.log('تم الاتصال بـ Redis (subscriber) بنجاح:', redisUrl);
+    });
+>>>>>>> ea43c59f862015ca0d03fd541a8ee96801dc6604
   }
 
   async onModuleInit() {
-    await this.client.ping();
-    await this.subscriber.ping();
+    try {
+      await Promise.all([this.client.ping(), this.subscriber.ping()]);
+      console.log('تم التحقق من الاتصال بـ Redis بنجاح');
+    } catch (error) {
+      console.error('فشل التحقق من الاتصال بـ Redis:', error.message);
+      throw new Error(`فشل الاتصال بـ Redis: ${error.message}`);
+    }
   }
 
   async onModuleDestroy() {
-    await this.client.quit();
-    await this.subscriber.quit();
+    try {
+      await Promise.all([this.client.quit(), this.subscriber.quit()]);
+      console.log('تم قطع الاتصال بـ Redis بنجاح');
+    } catch (error) {
+      console.error('فشل قطع الاتصال بـ Redis:', error);
+    }
   }
 
   getClient(): Redis {
@@ -36,62 +91,84 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return this.subscriber;
   }
 
-  async publish(channel: string, message: string) {
-    await this.client.publish(channel, message);
+  async publish(channel: string, message: string): Promise<void> {
+    try {
+      await this.client.publish(channel, message);
+    } catch (error) {
+      console.error(`فشل النشر على القناة ${channel}:`, error);
+      throw error;
+    }
   }
 
-  async subscribe(channel: string, callback: (message: string) => void) {
-    await this.subscriber.subscribe(channel);
-    this.subscriber.on("message", (ch, message) => {
-      if (ch === channel) {
-        callback(message);
+  async subscribe(channel: string, callback: (message: string) => void): Promise<void> {
+    try {
+      await this.subscriber.subscribe(channel);
+      this.subscriber.on("message", (ch, message) => {
+        if (ch === channel) {
+          callback(message);
+        }
+      });
+    } catch (error) {
+      console.error(`فشل الاشتراك في القناة ${channel}:`, error);
+      throw error;
+    }
+  }
+
+  async set(key: string, value: string, expirySeconds?: number): Promise<void> {
+    try {
+      if (expirySeconds) {
+        await this.client.set(key, value, "EX", expirySeconds);
+      } else {
+        await this.client.set(key, value);
       }
-    });
-  }
-
-  async set(key: string, value: string, expirySeconds?: number) {
-    if (expirySeconds) {
-      await this.client.set(key, value, "EX", expirySeconds);
-    } else {
-      await this.client.set(key, value);
+    } catch (error) {
+      console.error(`فشل تعيين المفتاح ${key}:`, error);
+      throw error;
     }
   }
 
   async get(key: string): Promise<string | null> {
-    return this.client.get(key);
+    try {
+      return await this.client.get(key);
+    } catch (error) {
+      console.error(`فشل جلب المفتاح ${key}:`, error);
+      throw error;
+    }
   }
 
-  async delete(key: string) {
-    return this.client.del(key)
+  async delete(key: string): Promise<number> {
+    try {
+      return await this.client.del(key);
+    } catch (error) {
+      console.error(`فشل حذف المفتاح ${key}:`, error);
+      throw error;
+    }
   }
 
   async deleteByPattern(pattern: string): Promise<void> {
     const stream = this.client.scanStream({
       match: pattern,
-      count: 100, // عدد المفاتيح اللي بتتفحص في كل دفعة
+      count: 100,
     });
 
     return new Promise<void>((resolve, reject) => {
       stream.on("data", async (keys: string[]) => {
         if (keys.length > 0) {
           try {
-            // حذف المفاتيح باستخدام DEL
             await this.client.del(...keys);
           } catch (error) {
-            console.error(`Error deleting keys for pattern ${pattern}:`, error);
+            console.error(`فشل حذف المفاتيح بالنمط ${pattern}:`, error);
             reject(error);
           }
         }
       });
 
       stream.on("end", () => {
-        // الـ scan خلّص
         resolve();
       });
 
       stream.on("error", (error) => {
-        // معالجة أي أخطاء أثناء الـ scan
-        console.error(`Error scanning keys for pattern ${pattern}:`, error);
+        console.error(`خطأ أثناء فحص المفاتيح بالنمط ${pattern}:`, error);
         reject(error);
       });
     });
