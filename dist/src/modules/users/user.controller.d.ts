@@ -19,7 +19,9 @@ export declare class UserController {
     deleteUser(payload: JWTPayload): Promise<{
         message: string;
     }>;
-    uploadImageUser(file: Express.Multer.File, payload: JWTPayload): Promise<import("./user.entity").User>;
+    uploadImageUser(file: Express.Multer.File, payload: JWTPayload): Promise<{
+        imageUrl: string | null;
+    }>;
     deleteImage(payload: JWTPayload): Promise<import("./user.entity").User>;
     toggleFollowUser(targetId: number, payload: JWTPayload): Promise<{
         message: string;

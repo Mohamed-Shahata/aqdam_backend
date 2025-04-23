@@ -138,6 +138,8 @@ let PostService = class PostService {
         return response;
     }
     async getAllForUserId(currentUserId, page = 1, limit = 5) {
+        const pageNumber = Number(page) || 1;
+        const limitNumber = Number(limit) || 5;
         const user = await this.userService.getOne(currentUserId);
         const [posts, total] = await this.postRepository
             .createQueryBuilder('post')
@@ -156,13 +158,13 @@ let PostService = class PostService {
             'user.lastName',
             'user.profileImage'
         ])
-            .skip((page - 1) * limit)
-            .take(limit)
+            .skip((pageNumber - 1) * limitNumber)
+            .take(limitNumber)
             .getManyAndCount();
         return {
             data: posts,
-            currentPage: page,
-            totalPages: Math.ceil(total / limit),
+            currentPage: pageNumber,
+            totalPages: Math.ceil(total / limitNumber),
             totalItems: total
         };
     }

@@ -24,7 +24,9 @@ export declare class UserService {
     delete(payload: JWTPayload): Promise<{
         message: string;
     }>;
-    uploadImage(payload: JWTPayload, file: Express.Multer.File): Promise<User>;
+    uploadImage(payload: JWTPayload, file: Express.Multer.File): Promise<{
+        imageUrl: string | null;
+    }>;
     deleteImage(payload: JWTPayload): Promise<User>;
     toggleFollow(id: number, targetUserId: number): Promise<{
         message: string;

@@ -136,7 +136,8 @@ let UserService = class UserService {
         user.profileImage = result.secure_url;
         user.imagePublicId = result.public_id;
         await this.redisService.delete(`user_${user.id}`);
-        return await this.userRepository.save(user);
+        await this.userRepository.save(user);
+        return { imageUrl: user.imagePublicId };
     }
     async deleteImage(payload) {
         const user = await this.getOne(payload.id);

@@ -55,13 +55,11 @@ let UserController = class UserController {
     }
     ;
     async uploadImageUser(file, payload) {
-        console.log("test");
         if (!file)
             throw new common_1.BadRequestException("no image provided");
         return this.userService.uploadImage(payload, file);
     }
     deleteImage(payload) {
-        console.log("delete");
         return this.userService.deleteImage(payload);
     }
     ;

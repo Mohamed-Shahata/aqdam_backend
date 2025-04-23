@@ -4,11 +4,11 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 ### Get all posts
 GET  http://localhost:5000/api/posts/feeds?page=1&limit=2
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUyNzAyNzksImV4cCI6MTc0NTM1NjY3OX0.rYhpidTGiEq-DG0BaDTUB3RDZcBQM4QPOef3pbmqt-E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDU0MDk0MzEsImV4cCI6MTc0NTQ5NTgzMX0.FZ0HbogqRqtzDqhxq1ssezFhUkW1QtDj_4F-WaopEkM
 
 ### Get all posts user
 GET  http://localhost:5000/api/posts/user/1
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUyNzAyNzksImV4cCI6MTc0NTM1NjY3OX0.rYhpidTGiEq-DG0BaDTUB3RDZcBQM4QPOef3pbmqt-E
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDU0MDk0MzEsImV4cCI6MTc0NTQ5NTgzMX0.FZ0HbogqRqtzDqhxq1ssezFhUkW1QtDj_4F-WaopEkM
 
 ### Get one post
 GET  http://localhost:5000/api/posts/1
@@ -16,16 +16,12 @@ Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6I
 
 ### Create post
 POST  http://localhost:5000/api/posts
-Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6Miwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDUwMDc0MDgsImV4cCI6MTc0NTA5MzgwOH0.hb_VTTt1PWYcBE6ijvLqT7H2ffG-hvfrEE7fRZeFZsE
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwicm9sZSI6InVzZXIiLCJpYXQiOjE3NDU0MDk0MzEsImV4cCI6MTc0NTQ5NTgzMX0.FZ0HbogqRqtzDqhxq1ssezFhUkW1QtDj_4F-WaopEkM
 Content-Type: application/json
 
 {
   "title":"Back end Develover",
   "content":"anything",
-  "introduction":"Back end Develover expirt",
-  "objectives_learn":"Mongodb express nestjs and more",
-  "additional_tips":"no thing",
-  "use_cases":"no thing",
   "resources":"mohamed@gmail.com"
 }
 
