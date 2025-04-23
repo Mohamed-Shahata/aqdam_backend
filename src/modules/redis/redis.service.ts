@@ -9,27 +9,36 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
 
   constructor(private config: ConfigService) {
     const redisUrl = this.config.get<string>('REDIS_URL');
-    // const object = {
-    //   host: this.config.get<string>('REDIS_HOST'),
-    //   port: this.config.get<number>('REDIS_PORT')
-    // }
 
     if (!redisUrl) {
-      throw new Error('REDIS_URL is not defined in .env file');
+      throw new Error('REDIS_URL غير معرف في ملف .env');
     }
 
-    this.client = new Redis(redisUrl);
-    this.subscriber = new Redis(redisUrl);
+    this.client = new Redis(redisUrl, {
+      retryStrategy: (times) => Math.min(times * 50, 2000),
+      maxRetriesPerRequest: 3,
+    });
+    this.subscriber = new Redis(redisUrl, {
+      retryStrategy: (times) => Math.min(times * 50, 2000),
+      maxRetriesPerRequest: 3,
+    });
   }
 
   async onModuleInit() {
-    await this.client.ping();
-    await this.subscriber.ping();
+    try {
+      await Promise.all([this.client.ping(), this.subscriber.ping()]);
+    } catch (error) {
+      console.error('فشل الاتصال بـ Redis:', error);
+      throw error;
+    }
   }
 
   async onModuleDestroy() {
-    await this.client.quit();
-    await this.subscriber.quit();
+    try {
+      await Promise.all([this.client.quit(), this.subscriber.quit()]);
+    } catch (error) {
+      console.error('فشل قطع الاتصال بـ Redis:', error);
+    }
   }
 
   getClient(): Redis {
@@ -40,62 +49,84 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return this.subscriber;
   }
 
-  async publish(channel: string, message: string) {
-    await this.client.publish(channel, message);
+  async publish(channel: string, message: string): Promise<void> {
+    try {
+      await this.client.publish(channel, message);
+    } catch (error) {
+      console.error(`فشل النشر على القناة ${channel}:`, error);
+      throw error;
+    }
   }
 
-  async subscribe(channel: string, callback: (message: string) => void) {
-    await this.subscriber.subscribe(channel);
-    this.subscriber.on("message", (ch, message) => {
-      if (ch === channel) {
-        callback(message);
+  async subscribe(channel: string, callback: (message: string) => void): Promise<void> {
+    try {
+      await this.subscriber.subscribe(channel);
+      this.subscriber.on("message", (ch, message) => {
+        if (ch === channel) {
+          callback(message);
+        }
+      });
+    } catch (error) {
+      console.error(`فشل الاشتراك في القناة ${channel}:`, error);
+      throw error;
+    }
+  }
+
+  async set(key: string, value: string, expirySeconds?: number): Promise<void> {
+    try {
+      if (expirySeconds) {
+        await this.client.set(key, value, "EX", expirySeconds);
+      } else {
+        await this.client.set(key, value);
       }
-    });
-  }
-
-  async set(key: string, value: string, expirySeconds?: number) {
-    if (expirySeconds) {
-      await this.client.set(key, value, "EX", expirySeconds);
-    } else {
-      await this.client.set(key, value);
+    } catch (error) {
+      console.error(`فشل تعيين المفتاح ${key}:`, error);
+      throw error;
     }
   }
 
   async get(key: string): Promise<string | null> {
-    return this.client.get(key);
+    try {
+      return await this.client.get(key);
+    } catch (error) {
+      console.error(`فشل جلب المفتاح ${key}:`, error);
+      throw error;
+    }
   }
 
-  async delete(key: string) {
-    return this.client.del(key)
+  async delete(key: string): Promise<number> {
+    try {
+      return await this.client.del(key);
+    } catch (error) {
+      console.error(`فشل حذف المفتاح ${key}:`, error);
+      throw error;
+    }
   }
 
   async deleteByPattern(pattern: string): Promise<void> {
     const stream = this.client.scanStream({
       match: pattern,
-      count: 100, // عدد المفاتيح اللي بتتفحص في كل دفعة
+      count: 100,
     });
 
     return new Promise<void>((resolve, reject) => {
       stream.on("data", async (keys: string[]) => {
         if (keys.length > 0) {
           try {
-            // حذف المفاتيح باستخدام DEL
             await this.client.del(...keys);
           } catch (error) {
-            console.error(`Error deleting keys for pattern ${pattern}:`, error);
+            console.error(`فشل حذف المفاتيح بالنمط ${pattern}:`, error);
             reject(error);
           }
         }
       });
 
       stream.on("end", () => {
-        // الـ scan خلّص
         resolve();
       });
 
       stream.on("error", (error) => {
-        // معالجة أي أخطاء أثناء الـ scan
-        console.error(`Error scanning keys for pattern ${pattern}:`, error);
+        console.error(`خطأ أثناء فحص المفاتيح بالنمط ${pattern}:`, error);
         reject(error);
       });
     });
