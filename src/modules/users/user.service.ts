@@ -167,7 +167,7 @@ export class UserService {
    * @param {Express.Multer.File} file - The image file to upload.
    * @returns {Promise<User>} The updated user with the new image.
    */
-  public async uploadImage(payload: JWTPayload, file: Express.Multer.File): Promise<User> {
+  public async uploadImage(payload: JWTPayload, file: Express.Multer.File) {
     const user = await this.getOne(payload.id);
 
     if (user.profileImage !== null) {
@@ -178,7 +178,8 @@ export class UserService {
     user.profileImage = result.secure_url;
     user.imagePublicId = result.public_id;
     await this.redisService.delete(`user_${user.id}`)
-    return await this.userRepository.save(user);
+    await this.userRepository.save(user);
+    return { imageUrl: user.imagePublicId }
   }
 
 
