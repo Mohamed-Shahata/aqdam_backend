@@ -1,4 +1,4 @@
-import { UserRole } from "src/utils/enum.roles";
+import { GenderType, UserRole } from "src/utils/enum.roles";
 import { Column, Entity, JoinTable, Like, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Job } from "../jobs/job.entity";
 import { Post } from "../posts/post.entity";
@@ -24,6 +24,9 @@ export class User {
 
   @Column()
   password: string
+
+  @Column({ type: "enum", enum: GenderType, default: "male" })
+  gender: GenderType
 
   @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
   role: UserRole

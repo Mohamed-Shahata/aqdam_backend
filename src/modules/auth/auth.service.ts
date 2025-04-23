@@ -28,7 +28,7 @@ export class AuthService {
    * @throws BadRequestException if user already exists
    */
   public async register(dto: RegisterDto) {
-    const { firstName, lastName, age, email, password } = dto;
+    const { firstName, lastName, age, email, gender, password } = dto;
     const userExsits = await this.userRrpository.findOne({ where: { email } });
     if (userExsits)
       throw new BadRequestException("Registration failed. Please try again later.");
@@ -42,6 +42,7 @@ export class AuthService {
       lastName,
       age,
       email,
+      gender,
       password: hashedPassword,
       verificationCode: String(code)
     });

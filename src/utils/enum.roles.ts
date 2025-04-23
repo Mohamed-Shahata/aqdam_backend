@@ -8,3 +8,8 @@ export enum ReactionType {
   BENEFITED = "benefited",
   NOT_BENEFITED = "not_benefited"
 }
+
+export enum GenderType {
+  MALE = "male",
+  FEMALE = "female"
+}

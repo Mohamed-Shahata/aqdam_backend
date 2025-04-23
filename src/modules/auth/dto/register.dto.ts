@@ -1,4 +1,5 @@
 import { IsNotEmpty, IsNumber, IsString, Length, Max, MaxLength, Min, MinLength } from "class-validator"
+import { GenderType } from "src/utils/enum.roles"
 
 export class RegisterDto {
 
@@ -22,6 +23,10 @@ export class RegisterDto {
   @IsNotEmpty()
   @MaxLength(250)
   email: string
+
+  @IsString()
+  @IsNotEmpty()
+  gender: GenderType
 
   @IsString()
   @MinLength(8)
