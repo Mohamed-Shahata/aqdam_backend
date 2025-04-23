@@ -19,7 +19,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       maxRetriesPerRequest: 5,
       enableOfflineQueue: true,
       connectTimeout: 10000,
-      family: 0, // دعم IPv4 وIPv6
+      family: 0,
     });
 
     this.subscriber = new Redis(redisUrl, {
@@ -27,10 +27,9 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       maxRetriesPerRequest: 5,
       enableOfflineQueue: true,
       connectTimeout: 10000,
-      family: 0, // دعم IPv4 وIPv6
+      family: 0,
     });
 
-    // معالجة أخطاء الاتصال
     this.client.on('error', (error) => {
       console.error('خطأ في الاتصال بـ Redis (client):', error.message, 'URL:', redisUrl);
     });
@@ -75,7 +74,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return this.subscriber;
   }
 
-  asynchronously publish(channel: string, message: string): Promise<void> {
+  async publish(channel: string, message: string): Promise<void> {
     try {
       await this.client.publish(channel, message);
     } catch (error) {
