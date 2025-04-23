@@ -78,7 +78,6 @@ export class UserController {
     @UploadedFile() file: Express.Multer.File,
     @CurrentUser() payload: JWTPayload
   ) {
-    console.log("test")
     if (!file) throw new BadRequestException("no image provided")
     return this.userService.uploadImage(payload, file);
   }
@@ -89,7 +88,6 @@ export class UserController {
   public deleteImage(
     @CurrentUser() payload: JWTPayload
   ) {
-    console.log("delete")
     return this.userService.deleteImage(payload);
   };
 
