@@ -23,4 +23,19 @@ export class UpdateUserDto {
   @IsOptional()
   @MaxLength(200)
   bio: string
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  linkedin_url: string
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  facebook_url: string
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(300)
+  github_url: string
 }

@@ -31,8 +31,18 @@ export class User {
   @Column({ type: "enum", enum: UserRole, default: UserRole.USER })
   role: UserRole
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, length: "200" })
   bio: string
+
+  @Column({ nullable: true })
+  linkedin_url: string
+
+  @Column({ nullable: true })
+  facebook_url: string
+
+  @Column({ nullable: true })
+
+  github_url: string
 
   @Column({ type: "varchar", nullable: true })
   profileImage: string | null
