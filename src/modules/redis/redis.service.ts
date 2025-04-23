@@ -8,23 +8,20 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   private subscriber: Redis;
 
   constructor(private config: ConfigService) {
-console.log(process.env.REDIS_URL);
+    console.log(process.env.REDIS_URL);
     const redisUrl = this.config.get<string>('REDIS_URL');
-<<<<<<< HEAD
-=======
 
     // لوغ للتأكد من قيمة REDIS_URL
     console.log('Attempting to load REDIS_URL:', redisUrl || 'undefined');
->>>>>>> ea43c59f862015ca0d03fd541a8ee96801dc6604
 
     if (!redisUrl) {
       throw new Error('REDIS_URL غير معرف في إعدادات البيئة. تأكدي من إضافته في Railway Environment Variables.');
     }
 
-<<<<<<< HEAD
+
     this.client = new Redis(redisUrl);
     this.subscriber = new Redis(redisUrl);
-=======
+
     // منع الاتصال بـ localhost
     if (redisUrl.includes('127.0.0.1') || redisUrl.includes('localhost')) {
       throw new Error('الاتصال بـ localhost مرفوض. استخدمي REDIS_URL من Railway.');
@@ -61,7 +58,7 @@ console.log(process.env.REDIS_URL);
     this.subscriber.on('connect', () => {
       console.log('تم الاتصال بـ Redis (subscriber) بنجاح:', redisUrl);
     });
->>>>>>> ea43c59f862015ca0d03fd541a8ee96801dc6604
+
   }
 
   async onModuleInit() {
