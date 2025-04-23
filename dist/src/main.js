@@ -9,16 +9,14 @@ async function bootstrap() {
     app.setGlobalPrefix("api");
     app.use(compression());
     app.enableCors({
-        origin: 'https://aqdam-git-aqdam-mohameds-projects-f5551999.vercel.app',
-        methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
-        credentials: true
+        origin: 'http://localhost:3000'
     });
     app.useGlobalPipes(new common_1.ValidationPipe({
         forbidNonWhitelisted: true,
         whitelist: true,
         transform: true,
     }));
-    await app.listen(process.env.PORT || 5000, "0.0.0.0");
+    await app.listen(5000);
 }
 bootstrap();
 //# sourceMappingURL=main.js.map

@@ -19,12 +19,15 @@ let RedisService = class RedisService {
     subscriber;
     constructor(config) {
         this.config = config;
-        const redisUrl = this.config.get('REDIS_URL');
-        if (!redisUrl) {
+        const object = {
+            host: this.config.get('REDIS_HOST'),
+            port: this.config.get('REDIS_PORT')
+        };
+        if (!object) {
             throw new Error('REDIS_URL is not defined in .env file');
         }
-        this.client = new ioredis_1.default(redisUrl);
-        this.subscriber = new ioredis_1.default(redisUrl);
+        this.client = new ioredis_1.default(object);
+        this.subscriber = new ioredis_1.default(object);
     }
     async onModuleInit() {
         await this.client.ping();
