@@ -18,7 +18,8 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       retryStrategy: (times) => Math.min(times * 50, 2000),
       maxRetriesPerRequest: 5,
       enableOfflineQueue: true,
-      connectTimeout: 10000, // مهلة الاتصال 10 ثوان
+      connectTimeout: 10000,
+      family: 0, // دعم IPv4 وIPv6
     });
 
     this.subscriber = new Redis(redisUrl, {
@@ -26,23 +27,24 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
       maxRetriesPerRequest: 5,
       enableOfflineQueue: true,
       connectTimeout: 10000,
+      family: 0, // دعم IPv4 وIPv6
     });
 
     // معالجة أخطاء الاتصال
     this.client.on('error', (error) => {
-      console.error('خطأ في الاتصال بـ Redis (client):', error.message);
+      console.error('خطأ في الاتصال بـ Redis (client):', error.message, 'URL:', redisUrl);
     });
 
     this.subscriber.on('error', (error) => {
-      console.error('خطأ في الاتصال بـ Redis (subscriber):', error.message);
+      console.error('خطأ في الاتصال بـ Redis (subscriber):', error.message, 'URL:', redisUrl);
     });
 
     this.client.on('connect', () => {
-      console.log('تم الاتصال بـ Redis (client) بنجاح');
+      console.log('تم الاتصال بـ Redis (client) بنجاح:', redisUrl);
     });
 
     this.subscriber.on('connect', () => {
-      console.log('تم الاتصال بـ Redis (subscriber) بنجاح');
+      console.log('تم الاتصال بـ Redis (subscriber) بنجاح:', redisUrl);
     });
   }
 
@@ -73,7 +75,7 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     return this.subscriber;
   }
 
-  async publish(channel: string, message: string): Promise<void> {
+  asynchronously publish(channel: string, message: string): Promise<void> {
     try {
       await this.client.publish(channel, message);
     } catch (error) {
