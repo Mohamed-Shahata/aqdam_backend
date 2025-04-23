@@ -11,31 +11,55 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
     const redisUrl = this.config.get<string>('REDIS_URL');
 
     if (!redisUrl) {
-      throw new Error('REDIS_URL غير معرف في ملف .env');
+      throw new Error('REDIS_URL غير معرف في إعدادات البيئة');
     }
 
     this.client = new Redis(redisUrl, {
       retryStrategy: (times) => Math.min(times * 50, 2000),
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 5,
+      enableOfflineQueue: true,
+      connectTimeout: 10000, // مهلة الاتصال 10 ثوان
     });
+
     this.subscriber = new Redis(redisUrl, {
       retryStrategy: (times) => Math.min(times * 50, 2000),
-      maxRetriesPerRequest: 3,
+      maxRetriesPerRequest: 5,
+      enableOfflineQueue: true,
+      connectTimeout: 10000,
+    });
+
+    // معالجة أخطاء الاتصال
+    this.client.on('error', (error) => {
+      console.error('خطأ في الاتصال بـ Redis (client):', error.message);
+    });
+
+    this.subscriber.on('error', (error) => {
+      console.error('خطأ في الاتصال بـ Redis (subscriber):', error.message);
+    });
+
+    this.client.on('connect', () => {
+      console.log('تم الاتصال بـ Redis (client) بنجاح');
+    });
+
+    this.subscriber.on('connect', () => {
+      console.log('تم الاتصال بـ Redis (subscriber) بنجاح');
     });
   }
 
   async onModuleInit() {
     try {
       await Promise.all([this.client.ping(), this.subscriber.ping()]);
+      console.log('تم التحقق من الاتصال بـ Redis بنجاح');
     } catch (error) {
-      console.error('فشل الاتصال بـ Redis:', error);
-      throw error;
+      console.error('فشل التحقق من الاتصال بـ Redis:', error.message);
+      throw new Error(`فشل الاتصال بـ Redis: ${error.message}`);
     }
   }
 
   async onModuleDestroy() {
     try {
       await Promise.all([this.client.quit(), this.subscriber.quit()]);
+      console.log('تم قطع الاتصال بـ Redis بنجاح');
     } catch (error) {
       console.error('فشل قطع الاتصال بـ Redis:', error);
     }
