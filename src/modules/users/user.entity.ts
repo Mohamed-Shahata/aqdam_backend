@@ -41,8 +41,10 @@ export class User {
   facebook_url: string
 
   @Column({ nullable: true })
-
   github_url: string
+
+  @Column({ nullable: true })
+  occupation: string
 
   @Column({ type: "varchar", nullable: true })
   profileImage: string | null

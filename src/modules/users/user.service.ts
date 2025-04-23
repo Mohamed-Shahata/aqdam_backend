@@ -132,10 +132,10 @@ export class UserService {
    * @returns {Promise<User>} The updated user object.
    */
   public async update(payload: JWTPayload, dto: UpdateUserDto): Promise<User> {
-    const { firstName, lastName, age, bio, facebook_url, github_url, linkedin_url } = dto;
+    const { firstName, lastName, age, bio, facebook_url, github_url, linkedin_url, occupation } = dto;
     const user = await this.getOne(payload.id);
 
-    await this.userRepository.update(payload.id, { firstName, lastName, age, bio, facebook_url, github_url, linkedin_url });
+    await this.userRepository.update(payload.id, { firstName, lastName, age, bio, facebook_url, github_url, linkedin_url, occupation });
     await this.redisService.delete(`user_${user.id}`)
     return this.getOne(user.id);
   };

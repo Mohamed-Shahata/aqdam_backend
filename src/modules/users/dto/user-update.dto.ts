@@ -38,4 +38,9 @@ export class UpdateUserDto {
   @IsOptional()
   @MaxLength(300)
   github_url: string
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(50)
+  occupation: string
 }
