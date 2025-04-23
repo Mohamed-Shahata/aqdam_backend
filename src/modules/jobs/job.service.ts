@@ -96,6 +96,7 @@ export class JobService {
         'user.id',
         'user.firstName',
         'user.lastName',
+        'user.gender',
         'user.profileImage'
       ])
       .skip((pageNumber - 1) * limitNumber)
