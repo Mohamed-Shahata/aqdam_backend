@@ -10,7 +10,7 @@ async function bootstrap() {
 
   app.use(compression())
   app.enableCors({
-    origin: 'https://aqdem-git-aqdam-mohameds-projects-f5551999.vercel.app'
+    origin: '*'
   });
 
   app.useGlobalPipes(
