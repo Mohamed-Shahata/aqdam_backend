@@ -62,7 +62,10 @@ let UserService = class UserService {
     async getOne(id) {
         const user = await this.userRepository.findOne({
             where: { id },
-            select: ['age', 'bio', 'firstName', 'lastName', 'id', 'point', 'profileImage', 'imagePublicId']
+            select: [
+                'age', 'bio', 'firstName', 'lastName', 'id', 'point', 'profileImage', 'imagePublicId', 'gender',
+                'facebook_url', 'github_url', 'linkedin_url', 'occupation'
+            ]
         });
         if (!user)
             throw new common_1.NotFoundException("User not found");
@@ -108,9 +111,9 @@ let UserService = class UserService {
     }
     ;
     async update(payload, dto) {
-        const { firstName, lastName, age, bio } = dto;
+        const { firstName, lastName, age, bio, facebook_url, github_url, linkedin_url, occupation } = dto;
         const user = await this.getOne(payload.id);
-        await this.userRepository.update(payload.id, { firstName, lastName, age, bio });
+        await this.userRepository.update(payload.id, { firstName, lastName, age, bio, facebook_url, github_url, linkedin_url, occupation });
         await this.redisService.delete(`user_${user.id}`);
         return this.getOne(user.id);
     }

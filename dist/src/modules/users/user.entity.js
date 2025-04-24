@@ -22,8 +22,13 @@ let User = class User {
     age;
     email;
     password;
+    gender;
     role;
     bio;
+    linkedin_url;
+    facebook_url;
+    github_url;
+    occupation;
     profileImage;
     imagePublicId;
     isAccountVerify;
@@ -62,13 +67,33 @@ __decorate([
     __metadata("design:type", String)
 ], User.prototype, "password", void 0);
 __decorate([
+    (0, typeorm_1.Column)({ type: "enum", enum: enum_roles_1.GenderType, default: "male" }),
+    __metadata("design:type", String)
+], User.prototype, "gender", void 0);
+__decorate([
     (0, typeorm_1.Column)({ type: "enum", enum: enum_roles_1.UserRole, default: enum_roles_1.UserRole.USER }),
     __metadata("design:type", String)
 ], User.prototype, "role", void 0);
 __decorate([
-    (0, typeorm_1.Column)({ nullable: true }),
+    (0, typeorm_1.Column)({ nullable: true, length: "200" }),
     __metadata("design:type", String)
 ], User.prototype, "bio", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "linkedin_url", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "facebook_url", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "github_url", void 0);
+__decorate([
+    (0, typeorm_1.Column)({ nullable: true }),
+    __metadata("design:type", String)
+], User.prototype, "occupation", void 0);
 __decorate([
     (0, typeorm_1.Column)({ type: "varchar", nullable: true }),
     __metadata("design:type", Object)

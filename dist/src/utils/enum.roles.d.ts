@@ -7,3 +7,7 @@ export declare enum ReactionType {
     BENEFITED = "benefited",
     NOT_BENEFITED = "not_benefited"
 }
+export declare enum GenderType {
+    MALE = "male",
+    FEMALE = "female"
+}

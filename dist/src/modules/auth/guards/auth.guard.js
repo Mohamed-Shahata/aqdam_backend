@@ -28,7 +28,6 @@ let AuthGuard = class AuthGuard {
         this.reflector = reflector;
     }
     async canActivate(context) {
-        console.log("test");
         const roles = this.reflector.getAllAndOverride("roles", [context.getHandler(), context.getClass()]);
         const request = context.switchToHttp().getRequest();
         const [type, token] = request.headers.authorization?.split(" ") ?? [];

@@ -16,6 +16,10 @@ class UpdateUserDto {
     lastName;
     age;
     bio;
+    linkedin_url;
+    facebook_url;
+    github_url;
+    occupation;
 }
 exports.UpdateUserDto = UpdateUserDto;
 __decorate([
@@ -43,4 +47,28 @@ __decorate([
     (0, class_validator_1.MaxLength)(200),
     __metadata("design:type", String)
 ], UpdateUserDto.prototype, "bio", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(300),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "linkedin_url", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(300),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "facebook_url", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(300),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "github_url", void 0);
+__decorate([
+    (0, class_validator_1.IsString)(),
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.MaxLength)(50),
+    __metadata("design:type", String)
+], UpdateUserDto.prototype, "occupation", void 0);
 //# sourceMappingURL=user-update.dto.js.map

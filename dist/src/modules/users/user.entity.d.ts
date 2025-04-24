@@ -1,4 +1,4 @@
-import { UserRole } from "src/utils/enum.roles";
+import { GenderType, UserRole } from "src/utils/enum.roles";
 import { Job } from "../jobs/job.entity";
 import { Post } from "../posts/post.entity";
 import { Reaction } from "../posts/likes.entity";
@@ -9,8 +9,13 @@ export declare class User {
     age: number;
     email: string;
     password: string;
+    gender: GenderType;
     role: UserRole;
     bio: string;
+    linkedin_url: string;
+    facebook_url: string;
+    github_url: string;
+    occupation: string;
     profileImage: string | null;
     imagePublicId: string | null;
     isAccountVerify: boolean;

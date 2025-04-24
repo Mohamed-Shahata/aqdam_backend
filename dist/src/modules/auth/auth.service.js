@@ -31,7 +31,7 @@ let AuthService = class AuthService {
     }
     ;
     async register(dto) {
-        const { firstName, lastName, age, email, password } = dto;
+        const { firstName, lastName, age, email, gender, password } = dto;
         const userExsits = await this.userRrpository.findOne({ where: { email } });
         if (userExsits)
             throw new common_1.BadRequestException("Registration failed. Please try again later.");
@@ -43,6 +43,7 @@ let AuthService = class AuthService {
             lastName,
             age,
             email,
+            gender,
             password: hashedPassword,
             verificationCode: String(code)
         });

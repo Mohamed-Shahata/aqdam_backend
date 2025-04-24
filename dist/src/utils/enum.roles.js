@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ReactionType = exports.UserRole = void 0;
+exports.GenderType = exports.ReactionType = exports.UserRole = void 0;
 var UserRole;
 (function (UserRole) {
     UserRole["USER"] = "user";
@@ -13,4 +13,9 @@ var ReactionType;
     ReactionType["BENEFITED"] = "benefited";
     ReactionType["NOT_BENEFITED"] = "not_benefited";
 })(ReactionType || (exports.ReactionType = ReactionType = {}));
+var GenderType;
+(function (GenderType) {
+    GenderType["MALE"] = "male";
+    GenderType["FEMALE"] = "female";
+})(GenderType || (exports.GenderType = GenderType = {}));
 //# sourceMappingURL=enum.roles.js.map

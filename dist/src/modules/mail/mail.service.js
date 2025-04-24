@@ -23,7 +23,7 @@ let MailService = class MailService {
     async sendMail(email, code) {
         try {
             this.mailerService.sendMail({
-                from: process.env.USERNAME_EMAIL,
+                from: process.env.SMTP_USERNAME,
                 to: email,
                 subject: "Verify Code",
                 template: "verify-code",
