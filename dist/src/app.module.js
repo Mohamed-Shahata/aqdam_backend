@@ -17,14 +17,16 @@ const job_module_1 = require("./modules/jobs/job.module");
 const notification_module_1 = require("./modules/notifications/notification.module");
 const data_source_1 = require("../db/data-source");
 const schedule_1 = require("@nestjs/schedule");
+const throttler_1 = require("@nestjs/throttler");
+const core_1 = require("@nestjs/core");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
-            schedule_1.ScheduleModule.forRoot(),
             auth_module_1.AuthModule,
+            schedule_1.ScheduleModule.forRoot(),
             user_module_1.UserModule,
             post_module_1.PostModule,
             job_module_1.JobModule,
@@ -33,8 +35,20 @@ exports.AppModule = AppModule = __decorate([
             config_1.ConfigModule.forRoot({
                 isGlobal: true,
                 envFilePath: ".env"
-            })
+            }),
+            throttler_1.ThrottlerModule.forRoot([
+                {
+                    ttl: 10000,
+                    limit: 6
+                }
+            ])
         ],
+        providers: [
+            {
+                provide: core_1.APP_GUARD,
+                useClass: throttler_1.ThrottlerGuard
+            }
+        ]
     })
 ], AppModule);
 //# sourceMappingURL=app.module.js.map
