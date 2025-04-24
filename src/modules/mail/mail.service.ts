@@ -22,7 +22,7 @@ export class MailService {
   public async sendMail(email: string, code: string) {
     try {
       this.mailerService.sendMail({
-        from: process.env.USERNAME_EMAIL,
+        from: process.env.SMTP_USERNAME,
         to: email,
         subject: "Verify Code",
         template: "verify-code",
