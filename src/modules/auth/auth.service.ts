@@ -30,12 +30,18 @@ export class AuthService {
   public async register(dto: RegisterDto) {
     const { firstName, lastName, age, email, gender, password } = dto;
     const userExsits = await this.userRrpository.findOne({ where: { email } });
-    if (userExsits)
-      throw new BadRequestException("Registration failed. Please try again later.");
+    if (userExsits && userExsits.isAccountVerify === true)
+      throw new BadRequestException("This account is already verified. Please log in.");
 
     const hashedPassword = await this.hashPassword(password);
     const code = Math.floor(100000 + Math.random() * 900000);
     await this.mailService.sendMail(email, String(code));
+
+    if (userExsits) {
+      userExsits.verificationCode = String(code);
+      await this.userRrpository.save(userExsits)
+      return { message: "Check your email" }
+    }
 
     const newUser = this.userRrpository.create({
       firstName,
@@ -90,6 +96,9 @@ export class AuthService {
     const user = await this.userRrpository.findOne({ where: { email } });
     if (!user)
       throw new BadRequestException("Email or password is wrong");
+
+    if (user.isAccountVerify === false)
+      throw new BadRequestException("Verify Account first");
 
     const isPasswordMatch = bcrypt.compareSync(password, user.password);
     if (!isPasswordMatch)
