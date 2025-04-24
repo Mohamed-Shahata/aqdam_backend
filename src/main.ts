@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as compression from "compression"
-// import * as crypto from 'crypto';
+import * as crypto from 'crypto';
 import helmet from 'helmet';
 
 async function bootstrap() {
