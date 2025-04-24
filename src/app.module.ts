@@ -7,7 +7,7 @@ import { PostModule } from './modules/posts/post.module';
 import { JobModule } from './modules/jobs/job.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { dataSourceOptions } from 'db/data-source';
-import { ScheduleModule } from '@nestjs/schedule'; s
+import { ScheduleModule } from '@nestjs/schedule';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
