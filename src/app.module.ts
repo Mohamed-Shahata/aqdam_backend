@@ -7,10 +7,9 @@ import { PostModule } from './modules/posts/post.module';
 import { JobModule } from './modules/jobs/job.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { dataSourceOptions } from 'db/data-source';
-import { MulterModule } from '@nestjs/platform-express';
 import { ScheduleModule } from '@nestjs/schedule';
 
-
+//
 @Module({
   imports: [
     ScheduleModule.forRoot(),
