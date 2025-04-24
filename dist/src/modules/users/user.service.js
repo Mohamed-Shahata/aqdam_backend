@@ -20,6 +20,7 @@ const typeorm_2 = require("typeorm");
 const cloudinary_service_1 = require("../uploads/cloudinary.service");
 const enum_roles_1 = require("../../utils/enum.roles");
 const redis_service_1 = require("../redis/redis.service");
+const schedule_1 = require("@nestjs/schedule");
 let UserService = class UserService {
     userRepository;
     cloudinaryService;
@@ -30,6 +31,9 @@ let UserService = class UserService {
         this.redisService = redisService;
     }
     ;
+    async deleteUnverifiedUser() {
+        this.userRepository.delete({ isAccountVerify: false });
+    }
     async getAll(search) {
         const query = this.userRepository.createQueryBuilder('user');
         if (search) {
@@ -208,6 +212,12 @@ let UserService = class UserService {
     }
 };
 exports.UserService = UserService;
+__decorate([
+    (0, schedule_1.Cron)(schedule_1.CronExpression.EVERY_10_SECONDS),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], UserService.prototype, "deleteUnverifiedUser", null);
 exports.UserService = UserService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, typeorm_1.InjectRepository)(user_entity_1.User)),

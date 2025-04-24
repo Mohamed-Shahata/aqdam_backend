@@ -9,6 +9,7 @@ export declare class UserService {
     private readonly cloudinaryService;
     private readonly redisService;
     constructor(userRepository: Repository<User>, cloudinaryService: CloudinaryService, redisService: RedisService);
+    deleteUnverifiedUser(): Promise<void>;
     getAll(search?: string): Promise<User[]>;
     getAllPeople(search?: string, page?: number, pageSize?: number): Promise<{
         data: User[];

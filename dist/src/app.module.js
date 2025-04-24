@@ -16,12 +16,14 @@ const post_module_1 = require("./modules/posts/post.module");
 const job_module_1 = require("./modules/jobs/job.module");
 const notification_module_1 = require("./modules/notifications/notification.module");
 const data_source_1 = require("../db/data-source");
+const schedule_1 = require("@nestjs/schedule");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
 exports.AppModule = AppModule = __decorate([
     (0, common_1.Module)({
         imports: [
+            schedule_1.ScheduleModule.forRoot(),
             auth_module_1.AuthModule,
             user_module_1.UserModule,
             post_module_1.PostModule,
