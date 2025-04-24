@@ -16,6 +16,7 @@ const cloudinary_module_1 = require("../uploads/cloudinary.module");
 const jwt_1 = require("@nestjs/jwt");
 const config_1 = require("@nestjs/config");
 const redis_module_1 = require("../redis/redis.module");
+const platform_express_1 = require("@nestjs/platform-express");
 let UserModule = class UserModule {
 };
 exports.UserModule = UserModule;
@@ -24,6 +25,7 @@ exports.UserModule = UserModule = __decorate([
         imports: [
             cloudinary_module_1.CloudinaryModule,
             redis_module_1.RedisModule,
+            platform_express_1.MulterModule,
             typeorm_1.TypeOrmModule.forFeature([user_entity_1.User]),
             jwt_1.JwtModule.registerAsync({
                 inject: [config_1.ConfigService],

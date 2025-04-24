@@ -7,12 +7,14 @@ import { CloudinaryModule } from "../uploads/cloudinary.module";
 import { JwtModule } from "@nestjs/jwt";
 import { ConfigService } from "@nestjs/config";
 import { RedisModule } from "../redis/redis.module";
+import { MulterModule } from "@nestjs/platform-express";
 
 
 @Module({
   imports: [
     CloudinaryModule,
     RedisModule,
+    MulterModule,
     TypeOrmModule.forFeature([User]),
     JwtModule.registerAsync({
       inject: [ConfigService],
