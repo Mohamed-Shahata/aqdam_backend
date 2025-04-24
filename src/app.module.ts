@@ -7,12 +7,11 @@ import { PostModule } from './modules/posts/post.module';
 import { JobModule } from './modules/jobs/job.module';
 import { NotificationModule } from './modules/notifications/notification.module';
 import { dataSourceOptions } from 'db/data-source';
-import { ScheduleModule } from '@nestjs/schedule';
+// import { ScheduleModule } from '@nestjs/schedule';s
 
 //
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     AuthModule,
     UserModule,
     PostModule,

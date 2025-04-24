@@ -7,7 +7,7 @@ import { CloudinaryService } from "../uploads/cloudinary.service";
 import { JWTPayload } from "src/utils/type";
 import { UserRole } from "src/utils/enum.roles";
 import { RedisService } from "../redis/redis.service";
-import { Cron, CronExpression } from "@nestjs/schedule";
+// import { Cron, CronExpression } from "@nestjs/schedule";
 
 
 @Injectable()
@@ -20,10 +20,10 @@ export class UserService {
   ) { };
 
 
-  @Cron(CronExpression.EVERY_10_SECONDS)
-  async deleteUnverifiedUser() {
-    this.userRepository.delete({ isAccountVerify: false });
-  }
+  // @Cron(CronExpression.EVERY_10_SECONDS)
+  // async deleteUnverifiedUser() {
+  //   this.userRepository.delete({ isAccountVerify: false });
+  // }
 
   /**
    * Retrieves all users from the database.
