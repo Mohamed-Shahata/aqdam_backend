@@ -1,7 +1,7 @@
 # ⚙️ Aqdam Backend
 
 Backend server built with **NestJS** and **TypeScript**, designed for modularity, performance, and scalability.  
-Includes features like authentication, mailing, file uploads (AWS S3 & Cloudinary), scheduling, and real-time communication via WebSockets.
+Includes features like authentication, mailing, file uploads (Cloudinary), scheduling, and real-time communication via WebSockets.
 
 ---
 
